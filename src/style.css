@@ -1,0 +1,74 @@
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  color-scheme: dark;
+  --color-bg: #0a0f1e;
+  --color-text: #f1f5f9;
+  --color-muted: #94a3b8;
+  --color-ok: #4ade80;
+  --color-err: #f87171;
+  --font-sans: system-ui, -apple-system, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", monospace;
+  --space-md: 1rem;
+  --space-lg: 2rem;
+}
+
+html {
+  font-family: var(--font-sans);
+  color: var(--color-text);
+  background: var(--color-bg);
+  line-height: 1.6;
+}
+
+body {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: var(--space-lg);
+}
+
+main {
+  text-align: center;
+  max-width: 28rem;
+}
+
+h1 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: var(--space-lg);
+  color: var(--color-muted);
+}
+
+.status {
+  font-family: var(--font-mono);
+  font-size: 1.125rem;
+}
+
+.status[data-state="connecting"] {
+  color: var(--color-muted);
+}
+
+.status[data-state="connected"] {
+  color: var(--color-ok);
+}
+
+.status[data-state="disconnected"] {
+  color: var(--color-muted);
+}
+
+.status[data-state="error"] {
+  color: var(--color-err);
+}
+
+.detail {
+  margin-top: var(--space-md);
+  font-size: 0.875rem;
+  color: var(--color-muted);
+  word-break: break-word;
+}
