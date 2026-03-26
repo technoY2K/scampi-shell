@@ -80,3 +80,41 @@ Reference implementations:
 
 - lowercase comments in new code
 - use pnpm for this repo
+
+## Git Workflow
+
+Commits follow the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) specification:
+
+```
+<type>[optional scope]: <description>
+
+[optional body]
+```
+
+### Types used in this project
+
+| type | when to use |
+|------|-------------|
+| `feat` | new user-facing feature or capability |
+| `fix` | bug fix |
+| `refactor` | code change that neither fixes a bug nor adds a feature |
+| `chore` | tooling, deps, config — no production code change |
+| `docs` | changes to AGENTS.md or other documentation only |
+| `style` | formatting, whitespace — no logic change |
+
+### Examples
+
+```bash
+feat(gateway): add reconnect backoff with jitter
+fix(gateway): handle missing nonce in challenge frame
+refactor: extract status banner into own module
+chore: upgrade vite to v8.1
+docs: document origin-mismatch workaround
+```
+
+### Rules
+
+- use lowercase for the entire commit message
+- keep the description under 72 characters
+- use the body to explain *why*, not *what*
+- breaking changes get a `!` after the type: `feat(gateway)!: drop protocol v2 support`
