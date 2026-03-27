@@ -53,7 +53,7 @@ Or use `openclaw config set` if your CLI exposes these keys. See [Configuration]
 ## UI
 
 - **Status** — fixed top-right pill (`#status-shell`), driven by `GatewayClient` in `main.ts`.
-- **Chat FAB** — fixed bottom-right; opens `<room-window>`. Hidden while the chat dialog is open; shown again on `room-window-close`.
+- **FAB dock** — fixed bottom-left (`#fab-dock`); horizontal row (macOS-dock style). **Chat** FAB toggles `<room-window>` (click open / click again or × to close); stays visible with green outline (`.fab-item--active`) while chat is open. `aria-pressed` tracks toggle state.
 - **`room-window`** — native `<dialog>` (non-modal `.show()`), title bar drag, z-index stacking, close dispatches `room-window-close` (bubbles, composed).
 - **`chat-panel`** — message list, textarea + Send; Enter sends, Shift+Enter newline. `addMessage("user" | "agent", text)` for future gateway hooks.
 

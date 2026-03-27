@@ -53,17 +53,32 @@ const client = new GatewayClient({
 
 client.start();
 
-function setFabVisible(visible: boolean): void {
-  chatFab?.classList.toggle("is-hidden", !visible);
+const CHAT_FAB_ACTIVE_CLASS = "fab-item--active";
+
+function syncChatFabActive(): void {
+  if (!chatFab || !chatWindow) {
+    return;
+  }
+  const open = chatWindow.isOpen;
+  chatFab.classList.toggle(CHAT_FAB_ACTIVE_CLASS, open);
+  chatFab.setAttribute("aria-pressed", open ? "true" : "false");
 }
 
 if (chatFab && chatWindow) {
+  chatFab.setAttribute("aria-pressed", "false");
+
   chatFab.addEventListener("click", () => {
-    chatWindow.open();
-    setFabVisible(false);
+    if (chatWindow.isOpen) {
+      chatWindow.close();
+    } else {
+      chatWindow.open();
+    }
+    syncChatFabActive();
   });
 
   chatWindow.addEventListener("room-window-close", () => {
-    setFabVisible(true);
+    syncChatFabActive();
   });
+
+  syncChatFabActive();
 }
