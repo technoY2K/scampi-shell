@@ -1,6 +1,6 @@
 # Room Zero
 
-Lightweight browser client for the [OpenClaw](https://docs.openclaw.ai/) gateway. This milestone only establishes a WebSocket connection and shows status on the page. Later: chat UI and canvas iframe for agent-generated HTML visualizations.
+Lightweight browser client for the [OpenClaw](https://docs.openclaw.ai/) gateway. WebSocket connection + status pill; floating **Chat** window (UI-only, not wired to `chat.send` yet). Later: gateway chat + canvas iframe for agent-generated HTML.
 
 ## Stack
 
@@ -50,17 +50,27 @@ On the **gateway host**, add the dev origin to `~/.openclaw/openclaw.json` (merg
 
 Or use `openclaw config set` if your CLI exposes these keys. See [Configuration](https://docs.openclaw.ai/configuration).
 
+## UI
+
+- **Status** — fixed top-right pill (`#status-shell`), driven by `GatewayClient` in `main.ts`.
+- **Chat FAB** — fixed bottom-right; opens `<room-window>`. Hidden while the chat dialog is open; shown again on `room-window-close`.
+- **`room-window`** — native `<dialog>` (non-modal `.show()`), title bar drag, z-index stacking, close dispatches `room-window-close` (bubbles, composed).
+- **`chat-panel`** — message list, textarea + Send; Enter sends, Shift+Enter newline. `addMessage("user" | "agent", text)` for future gateway hooks.
+
 ## Project layout
 
 ```
 index.html
 src/
-  main.ts           # boots gateway client, updates #status
+  main.ts                 # gateway client + fab / window wiring
   style.css
-  vite-env.d.ts     # import.meta.env typing
+  vite-env.d.ts
+  components/
+    room-window.ts        # <room-window> dialog shell
+    chat-panel.ts         # <chat-panel> local-only chat UI
   gateway/
-    types.ts        # protocol frame types
-    client.ts       # WebSocket + connect RPC (protocol v3)
+    types.ts
+    client.ts
 ```
 
 ## Gateway protocol

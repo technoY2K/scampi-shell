@@ -13,10 +13,16 @@
   --color-muted: #94a3b8;
   --color-ok: #4ade80;
   --color-err: #f87171;
+  --color-surface: #111827;
+  --color-border: #334155;
+  --color-accent: #3b82f6;
+  --radius-md: 10px;
+  --shadow-window: 0 16px 48px rgba(0, 0, 0, 0.45);
   --font-sans: system-ui, -apple-system, sans-serif;
   --font-mono: ui-monospace, "SF Mono", monospace;
   --space-md: 1rem;
   --space-lg: 2rem;
+  --space-sm: 0.5rem;
 }
 
 html {
@@ -28,47 +34,133 @@ html {
 
 body {
   min-height: 100dvh;
+  padding: var(--space-md);
+}
+
+/* status indicator — fixed top-right */
+.status-shell {
+  position: fixed;
+  top: var(--space-md);
+  right: var(--space-md);
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.35rem 0.6rem;
+  border-radius: 999px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  font-size: 0.75rem;
+  color: var(--color-muted);
+  max-width: min(50vw, 18rem);
+}
+
+.status-dot {
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: var(--color-muted);
+}
+
+.status-shell[data-state="connecting"] .status-dot {
+  background: var(--color-muted);
+  animation: pulse 1.2s ease-in-out infinite;
+}
+
+.status-shell[data-state="connected"] .status-dot {
+  background: var(--color-ok);
+}
+
+.status-shell[data-state="disconnected"] .status-dot {
+  background: var(--color-muted);
+}
+
+.status-shell[data-state="error"] .status-dot {
+  background: var(--color-err);
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+
+.status-label {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.status-detail {
+  display: none;
+}
+
+/* chat reopen FAB — bottom-right */
+.chat-fab {
+  position: fixed;
+  bottom: var(--space-lg);
+  right: var(--space-lg);
+  z-index: 40;
+  width: 3.25rem;
+  height: 3.25rem;
+  border-radius: 50%;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text);
+  box-shadow: var(--shadow-window);
+  cursor: pointer;
   display: grid;
   place-items: center;
-  padding: var(--space-lg);
+  transition:
+    transform 0.15s ease,
+    background 0.15s ease;
 }
 
-main {
-  text-align: center;
-  max-width: 28rem;
+.chat-fab:hover {
+  transform: scale(1.05);
+  background: #1e293b;
+  color: var(--color-accent);
 }
 
-h1 {
-  font-size: 1.25rem;
-  font-weight: 600;
-  margin-bottom: var(--space-lg);
-  color: var(--color-muted);
+.chat-fab:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
 }
 
-.status {
-  font-family: var(--font-mono);
-  font-size: 1.125rem;
+.chat-fab.is-hidden {
+  display: none;
 }
 
-.status[data-state="connecting"] {
-  color: var(--color-muted);
+.chat-fab svg {
+  display: block;
 }
 
-.status[data-state="connected"] {
-  color: var(--color-ok);
+/* forward design tokens into shadow roots (custom properties inherit) */
+room-window {
+  --rw-surface: var(--color-surface);
+  --rw-border: var(--color-border);
+  --rw-text: var(--color-text);
+  --rw-muted: var(--color-muted);
+  --rw-radius: var(--radius-md);
+  --rw-shadow: var(--shadow-window);
+  --rw-title-bg: #1e293b;
 }
 
-.status[data-state="disconnected"] {
-  color: var(--color-muted);
-}
-
-.status[data-state="error"] {
-  color: var(--color-err);
-}
-
-.detail {
-  margin-top: var(--space-md);
-  font-size: 0.875rem;
-  color: var(--color-muted);
-  word-break: break-word;
+chat-panel {
+  --cp-text: var(--color-text);
+  --cp-border: var(--color-border);
+  --cp-agent-bg: #1e293b;
+  --cp-user-bg: #1d4ed8;
+  --cp-composer-bg: #0f172a;
+  --cp-input-bg: #020617;
+  --cp-accent: var(--color-accent);
+  --cp-focus: var(--color-accent);
+  --cp-font: var(--font-sans);
 }

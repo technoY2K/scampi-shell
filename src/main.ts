@@ -1,18 +1,27 @@
 import "./style.css";
+import "./components/room-window";
+import "./components/chat-panel";
 import { GatewayClient } from "./gateway/client";
+import type { RoomWindow } from "./components/room-window";
 
 const DEFAULT_GATEWAY_URL = "ws://localhost:18789";
 
-const statusEl = document.querySelector<HTMLElement>("#status");
-const detailEl = document.querySelector<HTMLElement>("#detail");
+const statusShell = document.querySelector<HTMLElement>("#status-shell");
+const statusLabel = document.querySelector<HTMLElement>("#status-label");
+const chatFab = document.querySelector<HTMLButtonElement>("#chat-fab");
+const chatWindow = document.querySelector<RoomWindow>("#chat-window");
 
 function setUi(status: string, detail: string, dataState: string): void {
-  if (statusEl) {
-    statusEl.textContent = status;
-    statusEl.dataset.state = dataState;
+  if (statusShell) {
+    statusShell.dataset.state = dataState;
   }
-  if (detailEl) {
-    detailEl.textContent = detail;
+  if (statusLabel) {
+    statusLabel.textContent = status;
+  }
+  if (detail && statusLabel && detail !== status) {
+    statusLabel.title = detail;
+  } else if (statusLabel) {
+    statusLabel.title = "";
   }
 }
 
@@ -43,3 +52,18 @@ const client = new GatewayClient({
 });
 
 client.start();
+
+function setFabVisible(visible: boolean): void {
+  chatFab?.classList.toggle("is-hidden", !visible);
+}
+
+if (chatFab && chatWindow) {
+  chatFab.addEventListener("click", () => {
+    chatWindow.open();
+    setFabVisible(false);
+  });
+
+  chatWindow.addEventListener("room-window-close", () => {
+    setFabVisible(true);
+  });
+}
