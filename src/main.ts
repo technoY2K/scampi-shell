@@ -70,6 +70,15 @@ function isSilentReply(text: string): boolean {
   return /^\s*NO_REPLY\s*$/i.test(text);
 }
 
+/** strip gateway-injected system context and timestamp wrappers from user messages */
+function cleanUserMessage(text: string): string {
+  const lines = text.split("\n");
+  const cleaned = lines.filter((l) => !l.trimStart().startsWith("System:"));
+  let result = cleaned.join("\n").trim();
+  result = result.replace(/^\[.*?UTC\]\s*/i, "");
+  return result.trim();
+}
+
 async function loadChatHistory(): Promise<void> {
   if (!chatPanel) {
     return;
@@ -91,11 +100,15 @@ async function loadChatHistory(): Promise<void> {
         continue;
       }
       if (roleRaw === "user") {
-        chatPanel.addMessage("user", text);
+        const cleaned = cleanUserMessage(text);
+        if (!cleaned) {
+          continue;
+        }
+        chatPanel.addMessage("user", cleaned);
       } else if (roleRaw === "assistant") {
         chatPanel.addMessage("agent", text);
       } else {
-        chatPanel.addMessage("agent", text);
+        continue;
       }
     }
   } catch (e) {

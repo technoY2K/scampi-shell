@@ -36,10 +36,8 @@ export class ChatPanel extends HTMLElement {
         padding: 0.75rem;
         display: flex;
         flex-direction: column;
-        gap: 0.65rem;
       }
       .msg {
-        max-width: 88%;
         padding: 0.5rem 0.65rem;
         border-radius: 10px;
         line-height: 1.45;
@@ -47,14 +45,18 @@ export class ChatPanel extends HTMLElement {
         word-break: break-word;
       }
       .msg-user {
-        align-self: flex-end;
         background: var(--cp-user-bg, #1d4ed8);
         color: #fff;
       }
       .msg-agent {
-        align-self: flex-start;
         background: var(--cp-agent-bg, #1e293b);
         border: 1px solid var(--cp-border, #334155);
+      }
+      .msg + .msg {
+        margin-top: 0.5rem;
+      }
+      .msg-agent + .msg-user {
+        margin-top: 2.75rem;
       }
       .msg-streaming {
         opacity: 0.92;
