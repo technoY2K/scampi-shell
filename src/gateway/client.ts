@@ -6,6 +6,8 @@ import type {
   GatewayResponseFrame,
   HelloOkPayload,
 } from "./types";
+import { buildDeviceAuthPayload } from "./device-auth-payload";
+import { loadOrCreateDeviceIdentity, signDevicePayload } from "./device-identity";
 
 const PROTOCOL_VERSION = 3;
 const CONNECT_QUEUE_DELAY_MS = 750;
@@ -83,6 +85,9 @@ export class GatewayClient {
       return;
     }
     this.setStatus("connecting");
+    // new socket: server will send a fresh connect.challenge; drop any stale nonce
+    this.connectNonce = null;
+    this.connectSent = false;
     try {
       this.ws = new WebSocket(this.opts.url);
     } catch (e) {
@@ -115,10 +120,15 @@ export class GatewayClient {
   }
 
   private queueConnect(): void {
-    this.connectNonce = null;
     this.connectSent = false;
     if (this.connectTimer !== null) {
       clearTimeout(this.connectTimer);
+      this.connectTimer = null;
+    }
+    // challenge can arrive before `open` in some runtimes; never wipe nonce here
+    if (this.connectNonce) {
+      void this.sendConnect();
+      return;
     }
     this.connectTimer = setTimeout(() => {
       this.connectTimer = null;
@@ -126,17 +136,26 @@ export class GatewayClient {
     }, CONNECT_QUEUE_DELAY_MS);
   }
 
-  private buildConnectParams(): ConnectParams {
+  /**
+   * operator + gateway token without a valid `device` block gets scopes cleared server-side.
+   * binding uses @noble/ed25519 + @noble/hashes (no WebCrypto.subtle), so it works on http://LAN:5173.
+   */
+  private wantsDeviceBinding(): boolean {
+    return true;
+  }
+
+  private async buildConnectParamsAsync(): Promise<ConnectParams> {
     const token = this.opts.token?.trim();
-    return {
+    const client = {
+      id: "webchat",
+      version: "0.1.0",
+      platform: typeof navigator !== "undefined" ? navigator.platform || "web" : "web",
+      mode: "webchat",
+    };
+    const params: ConnectParams = {
       minProtocol: PROTOCOL_VERSION,
       maxProtocol: PROTOCOL_VERSION,
-      client: {
-        id: "webchat",
-        version: "0.1.0",
-        platform: typeof navigator !== "undefined" ? navigator.platform || "web" : "web",
-        mode: "webchat",
-      },
+      client,
       role: "operator",
       scopes: [...OPERATOR_SCOPES],
       caps: ["tool-events"],
@@ -144,10 +163,45 @@ export class GatewayClient {
       userAgent: typeof navigator !== "undefined" ? navigator.userAgent : "room-zero",
       locale: typeof navigator !== "undefined" ? navigator.language : "en-US",
     };
+
+    if (!this.connectNonce) {
+      return params;
+    }
+
+    try {
+      const identity = await loadOrCreateDeviceIdentity();
+      const signedAtMs = Date.now();
+      const nonce = this.connectNonce;
+      const payload = buildDeviceAuthPayload({
+        deviceId: identity.deviceId,
+        clientId: client.id,
+        clientMode: client.mode,
+        role: "operator",
+        scopes: [...OPERATOR_SCOPES],
+        signedAtMs,
+        token: token ?? null,
+        nonce,
+      });
+      const signature = await signDevicePayload(identity.privateKey, payload);
+      params.device = {
+        id: identity.deviceId,
+        publicKey: identity.publicKey,
+        signature,
+        signedAt: signedAtMs,
+        nonce,
+      };
+    } catch (err) {
+      console.warn("[room-zero] device identity unavailable; gateway will strip operator scopes", err);
+    }
+
+    return params;
   }
 
   private async sendConnect(): Promise<void> {
     if (this.connectSent || !this.ws || this.ws.readyState !== WebSocket.OPEN) {
+      return;
+    }
+    if (this.wantsDeviceBinding() && !this.connectNonce) {
       return;
     }
     this.connectSent = true;
@@ -156,7 +210,12 @@ export class GatewayClient {
       this.connectTimer = null;
     }
 
-    const params = this.buildConnectParams();
+    const params = await this.buildConnectParamsAsync();
+    if (this.opts.token?.trim() && !params.device) {
+      console.warn(
+        "[room-zero] connect without device attestation; gateway may clear operator scopes (see prior identity warnings)",
+      );
+    }
     try {
       const payload = (await this.request<unknown>("connect", params)) as HelloOkPayload;
       if (payload && typeof payload === "object" && payload.type === "hello-ok") {
@@ -198,10 +257,16 @@ export class GatewayClient {
         const nonce = payload && typeof payload.nonce === "string" ? payload.nonce : null;
         if (nonce) {
           this.connectNonce = nonce;
+          this.connectSent = false;
+          if (this.connectTimer !== null) {
+            clearTimeout(this.connectTimer);
+            this.connectTimer = null;
+          }
           void this.sendConnect();
         }
         return;
       }
+      this.opts.onEvent?.(evt.event, evt.payload);
       return;
     }
 

@@ -72,9 +72,32 @@ export type HelloOkPayload = {
   policy?: { tickIntervalMs?: number };
 };
 
+/** payload for gateway event "chat" (streaming + final assistant turns) */
+export type ChatEventPayload = {
+  runId: string;
+  sessionKey: string;
+  seq?: number;
+  state: "delta" | "final" | "aborted" | "error";
+  message?: unknown;
+  errorMessage?: string;
+};
+
+export type ChatHistoryResponse = {
+  sessionKey: string;
+  sessionId?: string;
+  messages: unknown[];
+  thinkingLevel?: string;
+};
+
+export type ChatSendResponse = {
+  runId: string;
+  status: "started" | "in_flight" | "ok" | "error";
+};
+
 export type GatewayClientOptions = {
   url: string;
   token?: string;
   onStatusChange?: (status: ConnectionStatus, detail?: string) => void;
   onHello?: (hello: HelloOkPayload) => void;
+  onEvent?: (event: string, payload: unknown) => void;
 };

@@ -7,6 +7,11 @@ export class ChatPanel extends HTMLElement {
   private readonly listEl: HTMLDivElement;
   private readonly inputEl: HTMLTextAreaElement;
   private readonly sendBtn: HTMLButtonElement;
+  /** temporary agent bubble while streaming */
+  private streamWrap: HTMLDivElement | null = null;
+
+  /** called when user submits; orchestrator adds messages and sends to gateway */
+  onSend?: (text: string) => void | Promise<void>;
 
   constructor() {
     super();
@@ -50,6 +55,10 @@ export class ChatPanel extends HTMLElement {
         align-self: flex-start;
         background: var(--cp-agent-bg, #1e293b);
         border: 1px solid var(--cp-border, #334155);
+      }
+      .msg-streaming {
+        opacity: 0.92;
+        border-style: dashed;
       }
       .msg-label {
         font-size: 0.65rem;
@@ -127,7 +136,7 @@ export class ChatPanel extends HTMLElement {
     this.shadow.append(style, this.listEl, composer);
 
     this.sendBtn.addEventListener("click", () => {
-      this.commitInput();
+      void this.commitInput();
     });
 
     this.inputEl.addEventListener("keydown", (ev) => {
@@ -138,18 +147,26 @@ export class ChatPanel extends HTMLElement {
         return;
       }
       ev.preventDefault();
-      this.commitInput();
+      void this.commitInput();
     });
   }
 
   connectedCallback(): void {
-    if (this.listEl.childElementCount === 0) {
-      this.addMessage("agent", "Welcome to Room Zero. Chat is UI-only for now.");
-      this.addMessage("agent", "Send a message to see it appear here.");
-    }
+    // no placeholder copy; history or gateway fills the list
   }
 
-  /** append a message row (for future gateway streaming) */
+  /** remove all message rows and any streaming bubble */
+  clearMessages(): void {
+    this.streamWrap = null;
+    this.listEl.replaceChildren();
+  }
+
+  setSending(busy: boolean): void {
+    this.sendBtn.disabled = busy;
+    this.inputEl.disabled = busy;
+  }
+
+  /** append a message row */
   addMessage(sender: ChatSender, text: string): void {
     const trimmed = text.trim();
     if (!trimmed) {
@@ -171,15 +188,48 @@ export class ChatPanel extends HTMLElement {
     this.scrollToBottom();
   }
 
-  private commitInput(): void {
+  /** create or update the in-progress agent bubble */
+  updateStream(text: string): void {
+    if (!this.streamWrap) {
+      const wrap = document.createElement("div");
+      wrap.className = "msg msg-agent msg-streaming";
+
+      const label = document.createElement("div");
+      label.className = "msg-label";
+      label.textContent = "Agent";
+
+      const body = document.createElement("div");
+      body.textContent = text;
+
+      wrap.append(label, body);
+      this.listEl.append(wrap);
+      this.streamWrap = wrap;
+    } else {
+      const body = this.streamWrap.querySelector("div:last-child");
+      if (body) {
+        body.textContent = text;
+      }
+    }
+    this.scrollToBottom();
+  }
+
+  /** remove streaming bubble without committing to history */
+  clearStream(): void {
+    if (this.streamWrap?.parentNode) {
+      this.streamWrap.remove();
+    }
+    this.streamWrap = null;
+  }
+
+  private async commitInput(): Promise<void> {
     const raw = this.inputEl.value;
     const trimmed = raw.trim();
     if (!trimmed) {
       return;
     }
-    this.addMessage("user", raw);
     this.inputEl.value = "";
     this.inputEl.style.height = "";
+    await this.onSend?.(trimmed);
   }
 
   private scrollToBottom(): void {
