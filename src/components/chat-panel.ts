@@ -9,6 +9,8 @@ export class ChatPanel extends HTMLElement {
   private readonly sendBtn: HTMLButtonElement;
   /** temporary agent bubble while streaming */
   private streamWrap: HTMLDivElement | null = null;
+  /** typing indicator element */
+  private typingWrap: HTMLDivElement | null = null;
 
   /** called when user submits; orchestrator adds messages and sends to gateway */
   onSend?: (text: string) => void | Promise<void>;
@@ -113,6 +115,27 @@ export class ChatPanel extends HTMLElement {
         opacity: 0.45;
         cursor: not-allowed;
       }
+      .typing {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 0.75rem 0;
+      }
+      .typing-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--cp-text, #f1f5f9);
+        opacity: 0.4;
+        animation: typing-bounce 1.2s ease-in-out infinite;
+      }
+      .typing-dot:nth-child(2) { animation-delay: 0.15s; }
+      .typing-dot:nth-child(3) { animation-delay: 0.3s; }
+      @keyframes typing-bounce {
+        0%, 60%, 100% { opacity: 0.4; transform: translateY(0); }
+        30% { opacity: 1; transform: translateY(-4px); }
+      }
     `;
 
     this.listEl = document.createElement("div");
@@ -215,6 +238,29 @@ export class ChatPanel extends HTMLElement {
     this.scrollToBottom();
   }
 
+  showTyping(): void {
+    if (this.typingWrap) {
+      return;
+    }
+    const wrap = document.createElement("div");
+    wrap.className = "typing";
+    for (let i = 0; i < 3; i++) {
+      const dot = document.createElement("span");
+      dot.className = "typing-dot";
+      wrap.append(dot);
+    }
+    this.listEl.append(wrap);
+    this.typingWrap = wrap;
+    this.scrollToBottom();
+  }
+
+  hideTyping(): void {
+    if (this.typingWrap?.parentNode) {
+      this.typingWrap.remove();
+    }
+    this.typingWrap = null;
+  }
+
   /** remove streaming bubble without committing to history */
   clearStream(): void {
     if (this.streamWrap?.parentNode) {
@@ -234,7 +280,7 @@ export class ChatPanel extends HTMLElement {
     await this.onSend?.(trimmed);
   }
 
-  private scrollToBottom(): void {
+  scrollToBottom(): void {
     requestAnimationFrame(() => {
       this.listEl.scrollTop = this.listEl.scrollHeight;
     });

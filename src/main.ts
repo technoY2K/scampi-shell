@@ -132,6 +132,7 @@ function handleChatEvent(payload: unknown): void {
     if (currentRunId && p.runId !== currentRunId) {
       return;
     }
+    chatPanel.hideTyping();
     const text = extractTextFromMessage(p.message);
     if (text && !isSilentReply(text)) {
       lastStreamText = text;
@@ -141,6 +142,7 @@ function handleChatEvent(payload: unknown): void {
   }
 
   if (p.state === "final") {
+    chatPanel.hideTyping();
     if (currentRunId && p.runId !== currentRunId) {
       const text = extractTextFromMessage(p.message);
       if (text?.trim() && !isSilentReply(text)) {
@@ -161,6 +163,7 @@ function handleChatEvent(payload: unknown): void {
   }
 
   if (p.state === "error") {
+    chatPanel.hideTyping();
     chatPanel.clearStream();
     lastStreamText = "";
     chatPanel.addMessage("agent", p.errorMessage ?? "Chat error");
@@ -169,6 +172,7 @@ function handleChatEvent(payload: unknown): void {
   }
 
   if (p.state === "aborted") {
+    chatPanel.hideTyping();
     const fromMsg = extractTextFromMessage(p.message);
     const text =
       fromMsg?.trim() && !isSilentReply(fromMsg) ? fromMsg : lastStreamText.trim();
@@ -220,6 +224,7 @@ if (chatPanel) {
     const runId = crypto.randomUUID();
     lastStreamText = "";
     chatPanel.addMessage("user", text);
+    chatPanel.showTyping();
     chatPanel.setSending(true);
     currentRunId = runId;
     try {
@@ -232,6 +237,7 @@ if (chatPanel) {
     } catch (e) {
       currentRunId = null;
       lastStreamText = "";
+      chatPanel.hideTyping();
       chatPanel.clearStream();
       const msg =
         e instanceof GatewayRequestError
@@ -279,6 +285,11 @@ if (chatFab && chatWindow) {
 
   chatWindow.addEventListener("room-window-close", () => {
     syncChatFabActive();
+  });
+
+  chatWindow.addEventListener("room-window-open", () => {
+    syncChatFabActive();
+    chatPanel?.scrollToBottom();
   });
 
   syncChatFabActive();

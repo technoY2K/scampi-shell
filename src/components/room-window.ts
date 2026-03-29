@@ -306,6 +306,12 @@ export class RoomWindow extends HTMLElement {
       this.dialogEl.show();
     }
     this.bringToFront();
+    this.dispatchEvent(
+      new CustomEvent("room-window-open", {
+        bubbles: true,
+        composed: true,
+      }),
+    );
   }
 
   close(): void {
