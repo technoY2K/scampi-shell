@@ -60,6 +60,15 @@ export class ChatPanel extends HTMLElement {
       .msg-agent + .msg-user {
         margin-top: 2.75rem;
       }
+      .session-header {
+        text-align: center;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--cp-text, #f1f5f9);
+        opacity: 0.5;
+        padding: 0.5rem 0 1rem;
+      }
       .msg-streaming {
         opacity: 0.92;
         border-style: dashed;
@@ -184,6 +193,13 @@ export class ChatPanel extends HTMLElement {
   clearMessages(): void {
     this.streamWrap = null;
     this.listEl.replaceChildren();
+  }
+
+  addSessionHeader(text: string): void {
+    const el = document.createElement("div");
+    el.className = "session-header";
+    el.textContent = text;
+    this.listEl.append(el);
   }
 
   setSending(busy: boolean): void {
