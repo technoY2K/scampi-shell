@@ -57,6 +57,14 @@ export class ChatPanel extends HTMLElement {
       .msg + .msg {
         margin-top: 0.5rem;
       }
+      .msg-user:has(+ .msg-agent) {
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+      }
+      .msg-user + .msg-agent {
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+      }
       .msg-agent + .msg-user {
         margin-top: 2.75rem;
       }
