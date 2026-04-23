@@ -40,7 +40,14 @@
           <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
         </svg>
       </button>
-      <button type="button" class="fab-item" aria-label="Settings" title="Settings (placeholder)">
+      <button
+        type="button"
+        id="settings-fab"
+        class="fab-item"
+        aria-label="Settings"
+        aria-pressed="false"
+        title="Settings"
+      >
         <svg
           viewBox="0 0 24 24"
           width="24"
@@ -62,6 +69,10 @@
 
     <room-window id="chat-window" title="Chat">
       <chat-panel></chat-panel>
+    </room-window>
+
+    <room-window id="settings-window" title="Settings">
+      <settings-panel></settings-panel>
     </room-window>
 
     <script type="module" src="/src/main.ts"></script>

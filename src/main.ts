@@ -1,9 +1,12 @@
 import "./style.css";
 import "./components/room-window";
 import "./features/chat/panel";
+import "./features/settings/panel";
 import { GatewayClient } from "./gateway/client";
 import { ChatController } from "./features/chat";
+import { SettingsController } from "./features/settings";
 import type { ChatPanel } from "./features/chat";
+import type { SettingsPanel } from "./features/settings";
 import type { RoomWindow } from "./components/room-window";
 
 const DEFAULT_GATEWAY_URL = "ws://localhost:18789";
@@ -13,8 +16,12 @@ const statusLabel = document.querySelector<HTMLElement>("#status-label");
 const chatFab = document.querySelector<HTMLButtonElement>("#chat-fab");
 const chatWindow = document.querySelector<RoomWindow>("#chat-window");
 const chatPanel = document.querySelector<ChatPanel>("chat-panel");
+const settingsFab = document.querySelector<HTMLButtonElement>("#settings-fab");
+const settingsWindow = document.querySelector<RoomWindow>("#settings-window");
+const settingsPanel = document.querySelector<SettingsPanel>("settings-panel");
 
 let chatController: ChatController | null = null;
+let settingsController: SettingsController | null = null;
 
 function setUi(status: string, detail: string, dataState: string): void {
   if (statusShell) {
@@ -53,9 +60,14 @@ const client = new GatewayClient({
       default:
         break;
     }
+    const gatewayReady = s === "connected";
+    settingsController?.setConnected(gatewayReady);
   },
   onHello: () => {
     void chatController?.loadHistory();
+    if (settingsWindow?.isOpen) {
+      void settingsController?.refresh();
+    }
   },
   onEvent: (event, payload) => {
     if (event === "chat") {
@@ -66,6 +78,11 @@ const client = new GatewayClient({
 
 if (chatPanel) {
   chatController = new ChatController(client, chatPanel);
+}
+
+if (settingsPanel) {
+  settingsController = new SettingsController(client, settingsPanel);
+  settingsController.setConnected(false);
 }
 
 client.start();
@@ -109,4 +126,37 @@ if (chatFab && chatWindow) {
   });
 
   syncChatFabActive();
+}
+
+function syncSettingsFabActive(): void {
+  if (!settingsFab || !settingsWindow) {
+    return;
+  }
+  const open = settingsWindow.isOpen;
+  settingsFab.classList.toggle(CHAT_FAB_ACTIVE_CLASS, open);
+  settingsFab.setAttribute("aria-pressed", open ? "true" : "false");
+}
+
+if (settingsFab && settingsWindow) {
+  settingsFab.setAttribute("aria-pressed", "false");
+
+  settingsFab.addEventListener("click", () => {
+    if (settingsWindow.isOpen) {
+      settingsWindow.close();
+    } else {
+      settingsWindow.open();
+    }
+    syncSettingsFabActive();
+  });
+
+  settingsWindow.addEventListener("room-window-close", () => {
+    syncSettingsFabActive();
+  });
+
+  settingsWindow.addEventListener("room-window-open", () => {
+    syncSettingsFabActive();
+    void settingsController?.refresh();
+  });
+
+  syncSettingsFabActive();
 }

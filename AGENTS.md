@@ -1,6 +1,6 @@
 # Room Zero
 
-Lightweight browser client for the [OpenClaw](https://docs.openclaw.ai/) gateway. WebSocket connection + status pill; floating **Chat** window (UI-only, not wired to `chat.send` yet). Later: gateway chat + canvas iframe for agent-generated HTML.
+Lightweight browser client for the [OpenClaw](https://docs.openclaw.ai/) gateway. WebSocket connection + status pill; floating **Chat** and **Settings** windows. **Settings** shows a read-only snapshot of the OpenClaw config via `config.get` (gateway-redacted). Later: more task-oriented panels + canvas iframe for agent-generated HTML.
 
 ## Product principles
 
@@ -73,9 +73,10 @@ Or use `openclaw config set` if your CLI exposes these keys. See [Configuration]
 ## UI
 
 - **Status** — fixed top-right pill (`#status-shell`), driven by `GatewayClient` in `main.ts`.
-- **FAB dock** — fixed bottom-left (`#fab-dock`); horizontal row (macOS-dock style). **Chat** FAB toggles `<room-window>` (click open / click again or × to close); stays visible with green outline (`.fab-item--active`) while chat is open. `aria-pressed` tracks toggle state.
+- **FAB dock** — fixed bottom-left (`#fab-dock`); horizontal row (macOS-dock style). **Chat** and **Settings** FABs each toggle their own `<room-window>` (click open / click again or × to close); active window shows green outline (`.fab-item--active`). `aria-pressed` tracks toggle state.
 - **`room-window`** — native `<dialog>` (non-modal `.show()`), title bar drag, z-index stacking, close dispatches `room-window-close` (bubbles, composed).
 - **`chat-panel`** — message list, textarea + Send; Enter sends, Shift+Enter newline. `addMessage("user" | "agent", text)` for future gateway hooks.
+- **`settings-panel`** — read-only settings view: pretty-printed JSON from `config.get`. States: waiting (gateway not ready), loading, error + Retry, loaded. Refresh on window open and after reconnect when the window stays open (`room-window-open` + `onHello` in `main.ts`).
 
 ## Project layout
 
@@ -87,7 +88,15 @@ src/
   vite-env.d.ts
   components/
     room-window.ts        # <room-window> dialog shell
-    chat-panel.ts         # <chat-panel> local-only chat UI
+  features/
+    chat/
+      panel.ts            # <chat-panel>
+      controller.ts
+      index.ts
+    settings/
+      panel.ts            # <settings-panel> read-only config snapshot
+      controller.ts
+      index.ts
   gateway/
     types.ts
     client.ts
