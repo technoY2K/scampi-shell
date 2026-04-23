@@ -2,6 +2,26 @@
 
 Lightweight browser client for the [OpenClaw](https://docs.openclaw.ai/) gateway. WebSocket connection + status pill; floating **Chat** window (UI-only, not wired to `chat.send` yet). Later: gateway chat + canvas iframe for agent-generated HTML.
 
+## Product principles
+
+Room Zero is a **translation layer** over the OpenClaw gateway, not a
+faithful UI for it. The target user is non-technical and will never open
+a terminal. When the API and the user disagree, the user wins.
+
+- **task-oriented, not method-oriented** — organize around user goals, not gateway methods
+- **safe by default** — destructive actions confirm and explain; read-first, write-second
+- **progressive disclosure** — advanced behavior lives behind "Advanced"; the default path shows the 3 things most users need
+- **plain-language errors** — no error codes, scopes, or protocol details in the happy path
+- **empty states teach** — first use is the tutorial; each panel explains what it is before it has data
+- **translate, don't expose** — `cron` becomes "schedules", `config` becomes "settings", `models.authStatus` becomes "Sign in to Anthropic"
+
+### What Room Zero is **not**
+
+- not a debugging tool (that's the CLI / logs)
+- not a power-user console (that's the CLI)
+- not a faithful mirror of the gateway API (that's the CLI)
+- not a replacement for the CLI — a **companion** to it, for a different audience
+
 ## Stack
 
 - Vite 8
