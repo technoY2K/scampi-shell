@@ -220,3 +220,18 @@ chat-panel {
   --cp-focus: var(--color-accent);
   --cp-font: var(--font-sans);
 }
+
+setup-panel {
+  --su-surface: var(--color-surface);
+  --su-border: var(--color-border);
+  --su-text: var(--color-text);
+  --su-muted: var(--color-muted);
+  --su-err: var(--color-err);
+  --su-accent: var(--color-accent);
+  --su-input-bg: #020617;
+  --su-radius: var(--radius-md);
+  --su-shadow: var(--shadow-window);
+  --su-mono: var(--font-mono);
+  z-index: 2000;
+  position: relative;
+}
