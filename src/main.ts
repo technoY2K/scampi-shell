@@ -13,6 +13,7 @@ const DEFAULT_GATEWAY_URL = "ws://localhost:18789";
 
 const statusShell = document.querySelector<HTMLElement>("#status-shell");
 const statusLabel = document.querySelector<HTMLElement>("#status-label");
+const brandVersion = document.querySelector<HTMLElement>("#brand-version");
 const chatFab = document.querySelector<HTMLButtonElement>("#chat-fab");
 const chatWindow = document.querySelector<RoomWindow>("#chat-window");
 const chatPanel = document.querySelector<ChatPanel>("chat-panel");
@@ -22,6 +23,15 @@ const settingsPanel = document.querySelector<SettingsPanel>("settings-panel");
 
 let chatController: ChatController | null = null;
 let settingsController: SettingsController | null = null;
+
+// sticky: keep last-known version visible across reconnects so transient
+// disconnects don't blank out an identity-level label.
+function setOpenClawVersion(version: string | undefined): void {
+  if (!brandVersion || !version) {
+    return;
+  }
+  brandVersion.textContent = `OpenClaw version ${version}`;
+}
 
 function setUi(status: string, detail: string, dataState: string): void {
   if (statusShell) {
@@ -63,7 +73,8 @@ const client = new GatewayClient({
     const gatewayReady = s === "connected";
     settingsController?.setConnected(gatewayReady);
   },
-  onHello: () => {
+  onHello: (hello) => {
+    setOpenClawVersion(hello.server?.version);
     void chatController?.loadHistory();
     if (settingsWindow?.isOpen) {
       void settingsController?.refresh();
