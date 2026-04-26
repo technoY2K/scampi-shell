@@ -1,6 +1,8 @@
 # Scampi Shell
 
-A desktop client for your [OpenClaw](https://docs.openclaw.ai/) gateway. Connects over WebSocket and gives you a UI for chat, settings, and schedules — without needing the terminal.
+A native desktop app for your [OpenClaw](https://docs.openclaw.ai/) gateway. Connects over WebSocket and gives you a UI for chat, settings, and schedules — without needing the terminal.
+
+Built with Vite + vanilla TypeScript on the frontend and [Tauri v2](https://tauri.app/) for the native shell. Configuration and device identity are stored natively (OS Keychain + app data directory) when running as a desktop app. The browser dev path works unchanged via `.env`.
 
 ## Philosophy
 
@@ -20,35 +22,22 @@ This project is intentionally built without a UI framework. Here's why:
 
 - [Node.js](https://nodejs.org/) 22+
 - [pnpm](https://pnpm.io/) (`npm install -g pnpm`)
+- [Rust](https://rustup.rs/) (stable, 1.77.2+) — required for Tauri builds
 - A running [OpenClaw](https://docs.openclaw.ai/) gateway (`openclaw gateway run`)
 
-## Setup
+## Development
 
-**1. Clone and install**
+### Browser dev (fastest iteration)
 
 ```bash
-git clone <repo-url>
-cd zaibatsu-systems
 pnpm install
+cp .env.example .env   # fill in VITE_GATEWAY_URL and VITE_GATEWAY_TOKEN
+pnpm dev               # http://localhost:5173
 ```
 
-**2. Configure**
+The `.env` file is only used by the browser dev path. The Tauri app persists its own config and does not read `.env` at runtime.
 
-```bash
-cp .env.example .env
-```
-
-Open `.env` and fill in your values:
-
-- `VITE_GATEWAY_URL` — WebSocket URL of your gateway (default `ws://localhost:18789`)
-- `VITE_GATEWAY_TOKEN` — your gateway token, get it with:
-  ```bash
-  openclaw config get gateway.token
-  ```
-
-**3. Allow the app origin in OpenClaw**
-
-On the machine running the gateway, add `http://localhost:5173` to the allowed origins:
+You'll also need to allow `localhost:5173` as an origin on the gateway host:
 
 ```bash
 openclaw config set gateway.controlUi.allowedOrigins '["http://localhost:5173"]'
@@ -56,24 +45,46 @@ openclaw config set gateway.controlUi.allowedOrigins '["http://localhost:5173"]'
 
 Then restart the gateway.
 
-**4. Run**
+### Native app dev
 
 ```bash
-pnpm dev
+pnpm tauri dev
 ```
 
-Open [http://localhost:5173](http://localhost:5173) in your browser.
+On first launch, a setup dialog asks for your gateway URL and token. These are saved to the Tauri app data directory (`config.json` via `tauri-plugin-store`) and reused on every subsequent launch.
 
-**5. Approve the device**
+Device identity (Ed25519 keypair) is generated on first connect and stored in the OS Keychain — macOS Keychain Access, Windows Credential Manager, or the Linux Secret Service.
 
-On first connect, OpenClaw will show a device approval prompt. Approve it via the OpenClaw UI or:
+### Approve the device
+
+On first connect (both browser and native), OpenClaw will show a device approval prompt. Approve it via the OpenClaw UI or:
 
 ```bash
 openclaw approvals list
 openclaw approvals approve <device-id>
 ```
 
-After that the app connects automatically on every launch.
+After approval the app connects automatically on every launch.
+
+## Build
+
+### Web only (Vite)
+
+```bash
+pnpm build
+```
+
+Output goes to `dist/`.
+
+### Native app (Tauri)
+
+```bash
+pnpm tauri build
+```
+
+Produces a signed installer for the current platform in `src-tauri/target/release/bundle/`. On macOS this is a `.dmg`; drag the `.app` to `/Applications` to install.
+
+> **Note:** `tauri build` produces an unsigned binary by default in local dev. Code signing requires Apple Developer credentials configured in `tauri.conf.json`.
 
 ## Remote gateway
 
@@ -83,12 +94,4 @@ If your gateway is on another machine, forward the port over SSH before running 
 ssh -L 18789:localhost:18789 user@your-server
 ```
 
-Then set `VITE_GATEWAY_URL=ws://localhost:18789` in `.env` as normal.
-
-## Build
-
-```bash
-pnpm build
-```
-
-Output goes to `dist/`.
+For browser dev, set `VITE_GATEWAY_URL=ws://localhost:18789` in `.env`. For the native app, enter `ws://localhost:18789` in the setup dialog on first launch.
