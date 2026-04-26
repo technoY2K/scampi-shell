@@ -1,8 +1,6 @@
-# Room Zero
+# Scampi Shell
 
 A desktop client for your [OpenClaw](https://docs.openclaw.ai/) gateway. Connects over WebSocket and gives you a UI for chat, settings, and schedules — without needing the terminal.
-
-> **Note:** the app name is a placeholder and will be updated soon.
 
 ## Philosophy
 

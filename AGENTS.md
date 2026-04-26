@@ -1,10 +1,10 @@
-# Room Zero
+# Scampi Shell
 
 Lightweight browser client for the [OpenClaw](https://docs.openclaw.ai/) gateway. WebSocket connection + status pill; floating **Chat** and **Settings** windows. **Settings** shows a read-only snapshot of the OpenClaw config via `config.get` (gateway-redacted). Later: more task-oriented panels + canvas iframe for agent-generated HTML.
 
 ## Product principles
 
-Room Zero is a **translation layer** over the OpenClaw gateway, not a
+Scampi Shell is a **translation layer** over the OpenClaw gateway, not a
 faithful UI for it. The target user is non-technical and will never open
 a terminal. When the API and the user disagree, the user wins.
 
@@ -15,7 +15,7 @@ a terminal. When the API and the user disagree, the user wins.
 - **empty states teach** — first use is the tutorial; each panel explains what it is before it has data
 - **translate, don't expose** — `cron` becomes "schedules", `config` becomes "settings", `models.authStatus` becomes "Sign in to Anthropic"
 
-### What Room Zero is **not**
+### What Scampi Shell is **not**
 
 - not a debugging tool (that's the CLI / logs)
 - not a power-user console (that's the CLI)

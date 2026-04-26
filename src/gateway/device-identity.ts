@@ -16,7 +16,8 @@ export type DeviceIdentity = {
   privateKey: string;
 };
 
-const STORAGE_KEY = "room-zero-device-identity-v1";
+const STORAGE_KEY = "scampi-shell-device-identity-v1";
+const LEGACY_STORAGE_KEY = "room-zero-device-identity-v1";
 
 function base64UrlEncode(bytes: Uint8Array): string {
   let binary = "";
@@ -61,6 +62,16 @@ async function generateIdentity(): Promise<DeviceIdentity> {
 
 export async function loadOrCreateDeviceIdentity(): Promise<DeviceIdentity> {
   const storage = getSafeLocalStorage();
+  // migrate identity from old room-zero key if present
+  try {
+    const legacy = storage?.getItem(LEGACY_STORAGE_KEY);
+    if (legacy && !storage?.getItem(STORAGE_KEY)) {
+      storage?.setItem(STORAGE_KEY, legacy);
+      storage?.removeItem(LEGACY_STORAGE_KEY);
+    }
+  } catch {
+    // ignore migration errors, will fall through to generate a new identity
+  }
   try {
     const raw = storage?.getItem(STORAGE_KEY);
     if (raw) {

@@ -160,7 +160,7 @@ export class GatewayClient {
       scopes: [...OPERATOR_SCOPES],
       caps: ["tool-events"],
       auth: token ? { token } : undefined,
-      userAgent: typeof navigator !== "undefined" ? navigator.userAgent : "room-zero",
+      userAgent: typeof navigator !== "undefined" ? navigator.userAgent : "scampi-shell",
       locale: typeof navigator !== "undefined" ? navigator.language : "en-US",
     };
 
@@ -191,7 +191,7 @@ export class GatewayClient {
         nonce,
       };
     } catch (err) {
-      console.warn("[room-zero] device identity unavailable; gateway will strip operator scopes", err);
+      console.warn("[scampi-shell] device identity unavailable; gateway will strip operator scopes", err);
     }
 
     return params;
@@ -213,7 +213,7 @@ export class GatewayClient {
     const params = await this.buildConnectParamsAsync();
     if (this.opts.token?.trim() && !params.device) {
       console.warn(
-        "[room-zero] connect without device attestation; gateway may clear operator scopes (see prior identity warnings)",
+        "[scampi-shell] connect without device attestation; gateway may clear operator scopes (see prior identity warnings)",
       );
     }
     try {
