@@ -3,6 +3,10 @@ import "./components/room-window";
 import "./features/chat/panel";
 import "./features/settings/panel";
 import "./features/schedules/panel";
+import "./features/setup/panel";
+import { loadGatewayConfig } from "./config/gateway-config";
+import { isTauri } from "./platform/runtime";
+import { runFirstRunSetup, type SetupPanel } from "./features/setup";
 import { GatewayClient } from "./gateway/client";
 import { ChatController } from "./features/chat";
 import { SettingsController } from "./features/settings";
@@ -11,8 +15,6 @@ import type { ChatPanel } from "./features/chat";
 import type { SettingsPanel } from "./features/settings";
 import type { SchedulesPanel } from "./features/schedules";
 import type { RoomWindow } from "./components/room-window";
-
-const DEFAULT_GATEWAY_URL = "ws://localhost:18789";
 
 const statusShell = document.querySelector<HTMLElement>("#status-shell");
 const statusLabel = document.querySelector<HTMLElement>("#status-label");
@@ -26,6 +28,7 @@ const settingsPanel = document.querySelector<SettingsPanel>("settings-panel");
 const schedulesFab = document.querySelector<HTMLButtonElement>("#schedules-fab");
 const schedulesWindow = document.querySelector<RoomWindow>("#schedules-window");
 const schedulesPanel = document.querySelector<SchedulesPanel>("schedules-panel");
+const setupWindow = document.querySelector<SetupPanel>("#setup-window");
 
 let chatController: ChatController | null = null;
 let settingsController: SettingsController | null = null;
@@ -54,73 +57,88 @@ function setUi(status: string, detail: string, dataState: string): void {
   }
 }
 
-const url = import.meta.env.VITE_GATEWAY_URL?.trim() || DEFAULT_GATEWAY_URL;
-const token = import.meta.env.VITE_GATEWAY_TOKEN?.trim() || undefined;
+let gatewayClient: GatewayClient | null = null;
 
-const client = new GatewayClient({
-  url,
-  token,
-  onStatusChange: (s, detail) => {
-    switch (s) {
-      case "connecting":
-        setUi("connecting…", url, "connecting");
-        break;
-      case "connected":
-        setUi("connected", url, "connected");
-        break;
-      case "disconnected":
-        setUi("disconnected", "reconnecting…", "disconnected");
-        break;
-      case "error":
-        setUi("error", detail ?? "unknown error", "error");
-        break;
-      default:
-        break;
-    }
-    const gatewayReady = s === "connected";
-    settingsController?.setConnected(gatewayReady);
-    schedulesController?.setConnected(gatewayReady);
-  },
-  onHello: (hello) => {
-    setOpenClawVersion(hello.server?.version);
-    void chatController?.loadHistory();
-    if (settingsWindow?.isOpen) {
-      void settingsController?.refresh();
-    }
-    if (schedulesWindow?.isOpen) {
-      void schedulesController?.refresh();
-    }
-  },
-  onEvent: (event, payload) => {
-    if (event === "chat") {
-      chatController?.handleEvent(payload);
-    } else if (event === "cron") {
-      schedulesController?.handleCronEvent(payload);
-    }
-  },
-});
+async function bootstrap(): Promise<void> {
+  let cfg = await loadGatewayConfig();
+  if (isTauri() && !cfg) {
+    await runFirstRunSetup(setupWindow);
+    cfg = await loadGatewayConfig();
+  }
+  if (!cfg) {
+    return;
+  }
 
-if (chatPanel) {
-  chatController = new ChatController(client, chatPanel);
-}
+  const { url, token: tokenStr } = cfg;
+  const token = tokenStr || undefined;
 
-if (settingsPanel) {
-  settingsController = new SettingsController(client, settingsPanel);
-  settingsController.setConnected(false);
-}
-
-if (schedulesPanel) {
-  schedulesController = new SchedulesController(client, schedulesPanel);
-  schedulesController.setConnected(false);
-}
-
-client.start();
-
-if (import.meta.hot) {
-  import.meta.hot.dispose(() => {
-    client.stop();
+  gatewayClient = new GatewayClient({
+    url,
+    token,
+    onStatusChange: (s, detail) => {
+      switch (s) {
+        case "connecting":
+          setUi("connecting…", url, "connecting");
+          break;
+        case "connected":
+          setUi("connected", url, "connected");
+          break;
+        case "disconnected":
+          setUi("disconnected", "reconnecting…", "disconnected");
+          break;
+        case "error":
+          setUi("error", detail ?? "unknown error", "error");
+          break;
+        default:
+          break;
+      }
+      const gatewayReady = s === "connected";
+      settingsController?.setConnected(gatewayReady);
+      schedulesController?.setConnected(gatewayReady);
+    },
+    onHello: (hello) => {
+      setOpenClawVersion(hello.server?.version);
+      void chatController?.loadHistory();
+      if (settingsWindow?.isOpen) {
+        void settingsController?.refresh();
+      }
+      if (schedulesWindow?.isOpen) {
+        void schedulesController?.refresh();
+      }
+    },
+    onEvent: (event, payload) => {
+      if (event === "chat") {
+        chatController?.handleEvent(payload);
+      } else if (event === "cron") {
+        schedulesController?.handleCronEvent(payload);
+      }
+    },
   });
+
+  if (chatPanel) {
+    chatController = new ChatController(gatewayClient, chatPanel);
+  }
+
+  if (settingsPanel) {
+    settingsController = new SettingsController(gatewayClient, settingsPanel);
+    settingsController.setConnected(false);
+  }
+
+  if (schedulesPanel) {
+    schedulesController = new SchedulesController(gatewayClient, schedulesPanel);
+    schedulesController.setConnected(false);
+  }
+
+  gatewayClient.start();
+
+  if (import.meta.hot) {
+    import.meta.hot.dispose(() => {
+      gatewayClient?.stop();
+    });
+  }
 }
+
+void bootstrap();
 
 const CHAT_FAB_ACTIVE_CLASS = "fab-item--active";
 

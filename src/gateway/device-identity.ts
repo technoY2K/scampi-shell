@@ -1,6 +1,7 @@
 import { getPublicKeyAsync, signAsync, utils } from "@noble/ed25519";
 import { sha256 } from "@noble/hashes/sha256";
-import { getSafeLocalStorage } from "./local-storage";
+import { DEVICE_IDENTITY_STORAGE_KEY } from "./identity-constants";
+import { getIdentityStore } from "../platform/storage";
 
 type StoredIdentity = {
   version: 1;
@@ -16,7 +17,7 @@ export type DeviceIdentity = {
   privateKey: string;
 };
 
-const STORAGE_KEY = "scampi-shell-device-identity-v1";
+const STORAGE_KEY = DEVICE_IDENTITY_STORAGE_KEY;
 
 function base64UrlEncode(bytes: Uint8Array): string {
   let binary = "";
@@ -60,9 +61,9 @@ async function generateIdentity(): Promise<DeviceIdentity> {
 }
 
 export async function loadOrCreateDeviceIdentity(): Promise<DeviceIdentity> {
-  const storage = getSafeLocalStorage();
+  const store = await getIdentityStore();
   try {
-    const raw = storage?.getItem(STORAGE_KEY);
+    const raw = await store.get(STORAGE_KEY);
     if (raw) {
       const parsed = JSON.parse(raw) as StoredIdentity;
       if (
@@ -77,7 +78,7 @@ export async function loadOrCreateDeviceIdentity(): Promise<DeviceIdentity> {
             ...parsed,
             deviceId: derivedId,
           };
-          storage?.setItem(STORAGE_KEY, JSON.stringify(updated));
+          await store.set(STORAGE_KEY, JSON.stringify(updated));
           return {
             deviceId: derivedId,
             publicKey: parsed.publicKey,
@@ -103,7 +104,7 @@ export async function loadOrCreateDeviceIdentity(): Promise<DeviceIdentity> {
     privateKey: identity.privateKey,
     createdAtMs: Date.now(),
   };
-  storage?.setItem(STORAGE_KEY, JSON.stringify(stored));
+  await store.set(STORAGE_KEY, JSON.stringify(stored));
   return identity;
 }
 
