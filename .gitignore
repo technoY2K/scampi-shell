@@ -1,3 +1,22 @@
+# dependencies
 node_modules/
+
+# build output
 dist/
+
+# env — contains real tokens, never commit
 .env
+.env.local
+.env.*.local
+
+# editor
+.DS_Store
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# tauri build artifacts (added later)
+src-tauri/target/
