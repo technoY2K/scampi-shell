@@ -2,11 +2,14 @@ import "./style.css";
 import "./components/room-window";
 import "./features/chat/panel";
 import "./features/settings/panel";
+import "./features/schedules/panel";
 import { GatewayClient } from "./gateway/client";
 import { ChatController } from "./features/chat";
 import { SettingsController } from "./features/settings";
+import { SchedulesController } from "./features/schedules";
 import type { ChatPanel } from "./features/chat";
 import type { SettingsPanel } from "./features/settings";
+import type { SchedulesPanel } from "./features/schedules";
 import type { RoomWindow } from "./components/room-window";
 
 const DEFAULT_GATEWAY_URL = "ws://localhost:18789";
@@ -20,9 +23,13 @@ const chatPanel = document.querySelector<ChatPanel>("chat-panel");
 const settingsFab = document.querySelector<HTMLButtonElement>("#settings-fab");
 const settingsWindow = document.querySelector<RoomWindow>("#settings-window");
 const settingsPanel = document.querySelector<SettingsPanel>("settings-panel");
+const schedulesFab = document.querySelector<HTMLButtonElement>("#schedules-fab");
+const schedulesWindow = document.querySelector<RoomWindow>("#schedules-window");
+const schedulesPanel = document.querySelector<SchedulesPanel>("schedules-panel");
 
 let chatController: ChatController | null = null;
 let settingsController: SettingsController | null = null;
+let schedulesController: SchedulesController | null = null;
 
 // sticky: keep last-known version visible across reconnects so transient
 // disconnects don't blank out an identity-level label.
@@ -72,6 +79,7 @@ const client = new GatewayClient({
     }
     const gatewayReady = s === "connected";
     settingsController?.setConnected(gatewayReady);
+    schedulesController?.setConnected(gatewayReady);
   },
   onHello: (hello) => {
     setOpenClawVersion(hello.server?.version);
@@ -79,10 +87,15 @@ const client = new GatewayClient({
     if (settingsWindow?.isOpen) {
       void settingsController?.refresh();
     }
+    if (schedulesWindow?.isOpen) {
+      void schedulesController?.refresh();
+    }
   },
   onEvent: (event, payload) => {
     if (event === "chat") {
       chatController?.handleEvent(payload);
+    } else if (event === "cron") {
+      schedulesController?.handleCronEvent(payload);
     }
   },
 });
@@ -94,6 +107,11 @@ if (chatPanel) {
 if (settingsPanel) {
   settingsController = new SettingsController(client, settingsPanel);
   settingsController.setConnected(false);
+}
+
+if (schedulesPanel) {
+  schedulesController = new SchedulesController(client, schedulesPanel);
+  schedulesController.setConnected(false);
 }
 
 client.start();
@@ -170,4 +188,37 @@ if (settingsFab && settingsWindow) {
   });
 
   syncSettingsFabActive();
+}
+
+function syncSchedulesFabActive(): void {
+  if (!schedulesFab || !schedulesWindow) {
+    return;
+  }
+  const open = schedulesWindow.isOpen;
+  schedulesFab.classList.toggle(CHAT_FAB_ACTIVE_CLASS, open);
+  schedulesFab.setAttribute("aria-pressed", open ? "true" : "false");
+}
+
+if (schedulesFab && schedulesWindow) {
+  schedulesFab.setAttribute("aria-pressed", "false");
+
+  schedulesFab.addEventListener("click", () => {
+    if (schedulesWindow.isOpen) {
+      schedulesWindow.close();
+    } else {
+      schedulesWindow.open();
+    }
+    syncSchedulesFabActive();
+  });
+
+  schedulesWindow.addEventListener("room-window-close", () => {
+    syncSchedulesFabActive();
+  });
+
+  schedulesWindow.addEventListener("room-window-open", () => {
+    syncSchedulesFabActive();
+    void schedulesController?.refresh();
+  });
+
+  syncSchedulesFabActive();
 }

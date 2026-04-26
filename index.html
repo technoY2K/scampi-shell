@@ -70,6 +70,30 @@
           />
         </svg>
       </button>
+      <button
+        type="button"
+        id="schedules-fab"
+        class="fab-item"
+        aria-label="Schedules"
+        aria-pressed="false"
+        title="Schedules"
+      >
+        <svg
+          viewBox="0 0 24 24"
+          width="24"
+          height="24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <rect x="3" y="4" width="18" height="18" rx="2" />
+          <path d="M16 2v4M8 2v4M3 10h18" />
+          <path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01" />
+        </svg>
+      </button>
     </div>
 
     <room-window id="chat-window" title="Chat">
@@ -78,6 +102,10 @@
 
     <room-window id="settings-window" title="Settings">
       <settings-panel></settings-panel>
+    </room-window>
+
+    <room-window id="schedules-window" title="Schedules">
+      <schedules-panel></schedules-panel>
     </room-window>
 
     <script type="module" src="/src/main.ts"></script>
