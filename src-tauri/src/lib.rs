@@ -1,6 +1,14 @@
+mod identity;
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
   tauri::Builder::default()
+    .plugin(tauri_plugin_store::Builder::default().build())
+    .invoke_handler(tauri::generate_handler![
+      identity::identity_get,
+      identity::identity_set,
+      identity::identity_remove,
+    ])
     .setup(|app| {
       if cfg!(debug_assertions) {
         app.handle().plugin(

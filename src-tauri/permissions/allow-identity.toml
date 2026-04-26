@@ -1,0 +1,8 @@
+[[permission]]
+identifier = "allow-identity"
+description = "read and update device identity in the OS keychain"
+commands.allow = [
+  "identity_get",
+  "identity_set",
+  "identity_remove",
+]
