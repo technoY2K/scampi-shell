@@ -6,24 +6,149 @@
   box-sizing: border-box;
 }
 
+/* ---------------------------------------------------------------
+ * primitives — raw color scales + non-themed layout tokens
+ * never reference these inside components; use semantic tokens instead
+ * --------------------------------------------------------------- */
 :root {
-  color-scheme: dark;
-  --color-bg: #0a0f1e;
-  --color-text: #f1f5f9;
-  --color-muted: #94a3b8;
-  --color-ok: #4ade80;
-  --color-err: #f87171;
-  --color-surface: #111827;
-  --color-border: #334155;
-  --color-accent: #3b82f6;
+  --slate-50: #f8fafc;
+  --slate-100: #f1f5f9;
+  --slate-200: #e2e8f0;
+  --slate-300: #cbd5e1;
+  --slate-400: #94a3b8;
+  --slate-500: #64748b;
+  --slate-600: #475569;
+  --slate-700: #334155;
+  --slate-800: #1e293b;
+  --slate-900: #0f172a;
+  --slate-950: #020617;
+
+  --blue-400: #60a5fa;
+  --blue-500: #3b82f6;
+  --blue-600: #2563eb;
+  --blue-700: #1d4ed8;
+
+  --green-300: #86efac;
+  --green-400: #4ade80;
+  --green-600: #16a34a;
+  --green-700: #15803d;
+
+  --red-400: #f87171;
+  --red-600: #dc2626;
+
+  --amber-300: #fcd34d;
+  --amber-400: #fbbf24;
+  --amber-700: #b45309;
+
+  --color-black: #000;
+  --color-white: #fff;
+
+  /* layout / typography — theme-agnostic */
   --radius-md: 10px;
   --shadow-window: 0 16px 48px rgba(0, 0, 0, 0.45);
   --font-sans: system-ui, -apple-system, sans-serif;
   --font-mono: ui-monospace, "SF Mono", monospace;
+  --space-sm: 0.5rem;
   --space-md: 1rem;
   --space-lg: 2rem;
-  --space-sm: 0.5rem;
 }
+
+/* ---------------------------------------------------------------
+ * semantic tokens — dark theme (default)
+ * `:root` covers the no-attribute case; `[data-theme="dark"]` is
+ * an explicit alias for the same set.
+ * --------------------------------------------------------------- */
+:root,
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  /* surfaces — depth increases inward (page → window → input) */
+  --color-bg: #0a0f1e; /* one-off page bg; step 3 will reconcile */
+  --color-surface: #111827; /* one-off window bg; step 3 will reconcile */
+  --color-surface-raised: var(--slate-800);
+  --color-surface-sunken: var(--slate-900);
+  --color-surface-deep: var(--slate-950);
+  --color-surface-hover: rgba(148, 163, 184, 0.12);
+  --color-scrim: rgba(2, 6, 23, 0.78);
+  --color-overlay: rgba(15, 23, 42, 0.85);
+
+  /* text */
+  --color-text: var(--slate-100);
+  --color-text-strong: var(--slate-200);
+  --color-text-soft: var(--slate-300);
+  --color-text-muted: var(--slate-400);
+
+  --color-border: var(--slate-700);
+
+  /* accent / primary action */
+  --color-accent: var(--blue-500);
+  --color-accent-strong: var(--blue-700);
+  --color-on-accent: var(--color-white);
+
+  /* status */
+  --color-ok: var(--green-400);
+  --color-ok-soft: var(--green-300);
+  --color-ok-bg: rgba(74, 222, 128, 0.15);
+  --color-err: var(--red-400);
+  --color-err-bg: rgba(248, 113, 113, 0.15);
+  --color-warn: var(--amber-300);
+  --color-warn-bg: rgba(251, 191, 36, 0.12);
+  --color-neutral-bg: rgba(148, 163, 184, 0.15);
+
+  --color-focus-ring: var(--blue-500);
+
+  /* decorative — resize affordance */
+  --color-handle: rgba(148, 163, 184, 0.35);
+  --color-handle-strong: rgba(148, 163, 184, 0.55);
+}
+
+/* ---------------------------------------------------------------
+ * semantic tokens — light theme (minimum working values)
+ * step 3 will refine; today this proves the seam end-to-end.
+ * --------------------------------------------------------------- */
+:root[data-theme="light"] {
+  color-scheme: light;
+
+  --color-bg: var(--slate-50);
+  --color-surface: var(--color-white);
+  --color-surface-raised: var(--slate-100);
+  --color-surface-sunken: var(--slate-100);
+  --color-surface-deep: var(--slate-50);
+  --color-surface-hover: rgba(15, 23, 42, 0.06);
+  --color-scrim: rgba(15, 23, 42, 0.38);
+  --color-overlay: rgba(15, 23, 42, 0.05);
+
+  --color-text: var(--slate-900);
+  --color-text-strong: var(--slate-950);
+  --color-text-soft: var(--slate-700);
+  --color-text-muted: var(--slate-500);
+
+  --color-border: var(--slate-300);
+
+  --color-accent: var(--blue-600);
+  --color-accent-strong: var(--blue-700);
+  --color-on-accent: var(--color-white);
+
+  --color-ok: var(--green-600);
+  --color-ok-soft: var(--green-700);
+  --color-ok-bg: rgba(22, 163, 74, 0.12);
+  --color-err: var(--red-600);
+  --color-err-bg: rgba(220, 38, 38, 0.10);
+  --color-warn: var(--amber-700);
+  --color-warn-bg: rgba(180, 83, 9, 0.10);
+  --color-neutral-bg: rgba(15, 23, 42, 0.08);
+
+  --color-focus-ring: var(--blue-600);
+
+  --color-handle: rgba(15, 23, 42, 0.25);
+  --color-handle-strong: rgba(15, 23, 42, 0.40);
+}
+
+/* future: opt into prefers-color-scheme without explicit override
+ * @media (prefers-color-scheme: light) {
+ *   :root:not([data-theme]) { ... light overrides ... }
+ * }
+ */
 
 html {
   font-family: var(--font-sans);
@@ -59,7 +184,7 @@ body {
 .brand__version {
   font-family: var(--font-mono);
   font-size: 0.7rem;
-  color: var(--color-muted);
+  color: var(--color-text-muted);
   margin-top: 0.15rem;
 }
 
@@ -77,7 +202,7 @@ body {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   font-size: 0.75rem;
-  color: var(--color-muted);
+  color: var(--color-text-muted);
   max-width: min(50vw, 18rem);
 }
 
@@ -86,11 +211,11 @@ body {
   height: 0.45rem;
   border-radius: 50%;
   flex-shrink: 0;
-  background: var(--color-muted);
+  background: var(--color-text-muted);
 }
 
 .status-shell[data-state="connecting"] .status-dot {
-  background: var(--color-muted);
+  background: var(--color-text-muted);
   animation: pulse 1.2s ease-in-out infinite;
 }
 
@@ -99,7 +224,7 @@ body {
 }
 
 .status-shell[data-state="disconnected"] .status-dot {
-  background: var(--color-muted);
+  background: var(--color-text-muted);
 }
 
 .status-shell[data-state="error"] .status-dot {
@@ -165,12 +290,12 @@ body {
 
 .fab-item:hover {
   transform: scale(1.05);
-  background: #1e293b;
+  background: var(--color-surface-raised);
   color: var(--color-accent);
 }
 
 .fab-item:focus-visible {
-  outline: 2px solid var(--color-accent);
+  outline: 2px solid var(--color-focus-ring);
   outline-offset: 2px;
 }
 
@@ -186,7 +311,7 @@ body {
 }
 
 .fab-item.fab-item--active:focus-visible {
-  outline: 2px solid var(--color-accent);
+  outline: 2px solid var(--color-focus-ring);
   outline-offset: 2px;
 }
 
@@ -198,37 +323,82 @@ body {
   display: block;
 }
 
-/* forward design tokens into shadow roots (custom properties inherit) */
+/* ---------------------------------------------------------------
+ * component-scoped aliases — forward semantic tokens into shadow roots
+ * components read via their prefix so they can be overridden in
+ * isolation later; default values resolve to semantic tokens here.
+ * --------------------------------------------------------------- */
 room-window {
   --rw-surface: var(--color-surface);
   --rw-border: var(--color-border);
   --rw-text: var(--color-text);
-  --rw-muted: var(--color-muted);
+  --rw-muted: var(--color-text-muted);
   --rw-radius: var(--radius-md);
   --rw-shadow: var(--shadow-window);
-  --rw-title-bg: #1e293b;
+  --rw-title-bg: var(--color-surface-raised);
+  --rw-err: var(--color-err);
+  --rw-err-bg: var(--color-err-bg);
+  --rw-handle: var(--color-handle);
+  --rw-handle-strong: var(--color-handle-strong);
 }
 
 chat-panel {
   --cp-text: var(--color-text);
   --cp-border: var(--color-border);
-  --cp-agent-bg: #1e293b;
-  --cp-user-bg: #1d4ed8;
-  --cp-composer-bg: #0f172a;
-  --cp-input-bg: #020617;
+  --cp-agent-bg: var(--color-surface-raised);
+  --cp-user-bg: var(--color-accent-strong);
+  --cp-composer-bg: var(--color-surface-sunken);
+  --cp-input-bg: var(--color-surface-deep);
   --cp-accent: var(--color-accent);
-  --cp-focus: var(--color-accent);
+  --cp-on-accent: var(--color-on-accent);
+  --cp-focus: var(--color-focus-ring);
   --cp-font: var(--font-sans);
+}
+
+settings-panel {
+  --sp-text: var(--color-text);
+  --sp-muted: var(--color-text-muted);
+  --sp-border: var(--color-border);
+  --sp-toolbar-bg: var(--color-surface-sunken);
+  --sp-pre-bg: var(--color-surface-deep);
+  --sp-accent: var(--color-accent);
+  --sp-on-accent: var(--color-on-accent);
+  --sp-err: var(--color-err);
+  --sp-font: var(--font-sans);
+}
+
+schedules-panel {
+  --sched-text: var(--color-text);
+  --sched-text-strong: var(--color-text-strong);
+  --sched-text-soft: var(--color-text-soft);
+  --sched-muted: var(--color-text-muted);
+  --sched-border: var(--color-border);
+  --sched-toolbar-bg: var(--color-surface-sunken);
+  --sched-card-bg: var(--color-surface-deep);
+  --sched-overlay-bg: var(--color-overlay);
+  --sched-hover-bg: var(--color-surface-hover);
+  --sched-accent: var(--color-accent);
+  --sched-on-accent: var(--color-on-accent);
+  --sched-ok: var(--color-ok);
+  --sched-ok-soft: var(--color-ok-soft);
+  --sched-ok-bg: var(--color-ok-bg);
+  --sched-err: var(--color-err);
+  --sched-warn: var(--color-warn);
+  --sched-warn-bg: var(--color-warn-bg);
+  --sched-neutral-bg: var(--color-neutral-bg);
+  --sched-font: var(--font-sans);
 }
 
 setup-panel {
   --su-surface: var(--color-surface);
   --su-border: var(--color-border);
   --su-text: var(--color-text);
-  --su-muted: var(--color-muted);
+  --su-muted: var(--color-text-muted);
   --su-err: var(--color-err);
   --su-accent: var(--color-accent);
-  --su-input-bg: #020617;
+  --su-on-accent: var(--color-on-accent);
+  --su-input-bg: var(--color-surface-deep);
+  --su-scrim: var(--color-scrim);
   --su-radius: var(--radius-md);
   --su-shadow: var(--shadow-window);
   --su-mono: var(--font-mono);

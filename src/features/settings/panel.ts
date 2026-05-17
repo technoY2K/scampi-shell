@@ -55,7 +55,7 @@ export class SettingsPanel extends HTMLElement {
         border: none;
         border-radius: 8px;
         background: var(--sp-accent, #3b82f6);
-        color: #fff;
+        color: var(--sp-on-accent, #fff);
         font-weight: 600;
         font-size: 0.8125rem;
         cursor: pointer;
@@ -88,7 +88,7 @@ export class SettingsPanel extends HTMLElement {
       }
       .error-msg {
         margin: 0 0 0.5rem;
-        color: #f87171;
+        color: var(--sp-err, #f87171);
       }
       .pre-wrap {
         flex: 1;

@@ -72,8 +72,8 @@ export class RoomWindow extends HTMLElement {
           135deg,
           transparent 0%,
           transparent 50%,
-          rgba(148, 163, 184, 0.35) 50%,
-          rgba(148, 163, 184, 0.35) 100%
+          var(--rw-handle, rgba(148, 163, 184, 0.35)) 50%,
+          var(--rw-handle, rgba(148, 163, 184, 0.35)) 100%
         );
       }
       .resize-handle:hover {
@@ -81,8 +81,8 @@ export class RoomWindow extends HTMLElement {
           135deg,
           transparent 0%,
           transparent 45%,
-          rgba(148, 163, 184, 0.55) 45%,
-          rgba(148, 163, 184, 0.55) 100%
+          var(--rw-handle-strong, rgba(148, 163, 184, 0.55)) 45%,
+          var(--rw-handle-strong, rgba(148, 163, 184, 0.55)) 100%
         );
       }
       dialog[open]::backdrop {
@@ -128,8 +128,8 @@ export class RoomWindow extends HTMLElement {
         line-height: 1;
       }
       .close-btn:hover {
-        background: rgba(248, 113, 113, 0.15);
-        color: #f87171;
+        background: var(--rw-err-bg, rgba(248, 113, 113, 0.15));
+        color: var(--rw-err, #f87171);
       }
       .body {
         flex: 1;

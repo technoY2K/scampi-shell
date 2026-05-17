@@ -48,7 +48,7 @@ export class ChatPanel extends HTMLElement {
       }
       .msg-user {
         background: var(--cp-user-bg, #1d4ed8);
-        color: #fff;
+        color: var(--cp-on-accent, #fff);
       }
       .msg-agent {
         background: var(--cp-agent-bg, #1e293b);
@@ -120,7 +120,7 @@ export class ChatPanel extends HTMLElement {
         border: none;
         border-radius: 8px;
         background: var(--cp-accent, #3b82f6);
-        color: #fff;
+        color: var(--cp-on-accent, #fff);
         font-weight: 600;
         font-size: 0.8125rem;
         cursor: pointer;

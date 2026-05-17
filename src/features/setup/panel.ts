@@ -40,7 +40,7 @@ export class SetupPanel extends HTMLElement {
         width: min(92vw, 400px);
       }
       dialog::backdrop {
-        background: rgba(2, 6, 23, 0.78);
+        background: var(--su-scrim, rgba(2, 6, 23, 0.78));
       }
       .frame {
         padding: 1.15rem 1.1rem 1.1rem;
@@ -91,7 +91,7 @@ export class SetupPanel extends HTMLElement {
         border: none;
         border-radius: 8px;
         background: var(--su-accent, #3b82f6);
-        color: #fff;
+        color: var(--su-on-accent, #fff);
         font-weight: 600;
         font-size: 0.85rem;
         cursor: pointer;
