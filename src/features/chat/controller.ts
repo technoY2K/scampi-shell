@@ -127,10 +127,11 @@ export class ChatController {
         return;
       }
       this.panel.hideTyping();
-      const text = extractTextFromMessage(p.message);
-      if (text && !isSilentReply(text)) {
-        this.lastStreamText = text;
-        this.panel.updateStream(text);
+      // v4: deltaText is the source of truth; replace=true means full snapshot,
+      // absent/false means append to the running buffer
+      this.lastStreamText = p.replace ? p.deltaText : this.lastStreamText + p.deltaText;
+      if (this.lastStreamText && !isSilentReply(this.lastStreamText)) {
+        this.panel.updateStream(this.lastStreamText);
       }
       return;
     }

@@ -9,7 +9,7 @@ import type {
 import { buildDeviceAuthPayload } from "./device-auth-payload";
 import { loadOrCreateDeviceIdentity, signDevicePayload } from "./device-identity";
 
-const PROTOCOL_VERSION = 3;
+const PROTOCOL_VERSION = 4;
 const CONNECT_QUEUE_DELAY_MS = 750;
 
 const OPERATOR_SCOPES = [

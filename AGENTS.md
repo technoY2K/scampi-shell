@@ -183,7 +183,7 @@ In Tauri, `bootstrap()` in `main.ts` calls `loadGatewayConfig()` before starting
 OpenClaw uses JSON over WebSocket (not REST or MCP for this path):
 
 1. Server sends an `event` with `event: "connect.challenge"` and a `nonce` when the socket opens.
-2. Client sends `{ type: "req", id, method: "connect", params }` with `minProtocol`/`maxProtocol` 3, `client` (`webchat` / `webchat` mode), operator scopes, `caps`, optional `auth.token`.
+2. Client sends `{ type: "req", id, method: "connect", params }` with `minProtocol`/`maxProtocol` 4, `client` (`webchat` / `webchat` mode), operator scopes, `caps`, optional `auth.token`.
 3. Server responds with `{ type: "res", ok: true, payload }` where `payload.type === "hello-ok"` on success.
 
 Reference implementations:

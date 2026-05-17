@@ -72,15 +72,50 @@ export type HelloOkPayload = {
   policy?: { tickIntervalMs?: number };
 };
 
-/** payload for gateway event "chat" (streaming + final assistant turns) */
-export type ChatEventPayload = {
+/**
+ * payload for gateway event "chat" (streaming + final assistant turns).
+ * mirrors src/gateway/protocol/schema/logs-chat.ts in openclaw v4; only
+ * the fields we read are modeled here. add optional fields (spawnedBy,
+ * usage, stopReason, errorKind) when a feature consumes them.
+ */
+type ChatEventBase = {
   runId: string;
   sessionKey: string;
-  seq?: number;
-  state: "delta" | "final" | "aborted" | "error";
+  // wire-required since v4; not consumed yet, kept for future ordering work
+  seq: number;
+};
+
+export type ChatDeltaEvent = ChatEventBase & {
+  state: "delta";
+  // v4 source of truth for streaming text
+  deltaText: string;
+  // true: full snapshot replace; absent/false: append
+  replace?: boolean;
+  // legacy snapshot, optional in v4 — defensive reads only
+  message?: unknown;
+};
+
+export type ChatFinalEvent = ChatEventBase & {
+  state: "final";
+  message?: unknown;
+};
+
+export type ChatAbortedEvent = ChatEventBase & {
+  state: "aborted";
+  message?: unknown;
+};
+
+export type ChatErrorEvent = ChatEventBase & {
+  state: "error";
   message?: unknown;
   errorMessage?: string;
 };
+
+export type ChatEventPayload =
+  | ChatDeltaEvent
+  | ChatFinalEvent
+  | ChatAbortedEvent
+  | ChatErrorEvent;
 
 export type ChatHistoryResponse = {
   sessionKey: string;
