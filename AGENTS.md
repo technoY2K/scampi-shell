@@ -235,3 +235,37 @@ fix(tauri): downgrade keyring to v2 for unsigned dev builds
 - keep the description under 72 characters
 - use the body to explain *why*, not *what*
 - breaking changes get a `!` after the type: `feat(gateway)!: drop protocol v2 support`
+
+## Cursor Cloud specific instructions
+
+### Services
+
+| Service | Command | Notes |
+|---------|---------|-------|
+| Vite dev server | `pnpm dev` | Serves frontend at `http://localhost:5173` |
+
+The Tauri native path (`pnpm tauri dev`) requires a display server + system GUI libs and is **not available** in Cloud Agent VMs.
+
+### Lint / type-check
+
+No ESLint is configured. The only static check is TypeScript strict mode:
+
+```bash
+npx tsc --noEmit
+```
+
+### Build
+
+```bash
+pnpm build   # runs tsc && vite build → dist/
+```
+
+### Tests
+
+No test framework or test files exist in this repo. Validate changes with `tsc --noEmit` and manual browser testing via `pnpm dev`.
+
+### Environment
+
+- `.env` is git-ignored. Create it from `.env.example` before running `pnpm dev`. The default values work for the UI shell (gateway connection will fail without a real OpenClaw instance, but the UI renders).
+- The app connects to an OpenClaw gateway via WebSocket (`VITE_GATEWAY_URL`). Without a running gateway, the status pill shows "disconnected" and panels show "Waiting for OpenClaw…" — this is expected and does not block UI development.
+- `pnpm install` is the only dependency step; no native/system dependencies are needed for browser-mode development.
