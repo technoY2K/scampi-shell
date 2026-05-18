@@ -44,8 +44,11 @@
   --color-white: #fff;
 
   /* layout / typography — theme-agnostic */
-  --radius-md: 10px;
-  --shadow-window: 0 16px 48px rgba(0, 0, 0, 0.45);
+  --radius-sm: 10px; /* inputs, small chips */
+  --radius-md: 14px; /* buttons, status pill, close affordances */
+  --radius-lg: 20px; /* room-window, setup-panel — the "tile" radius */
+  --radius-pill: 999px;
+  --shadow-window: 0 16px 48px rgba(0, 0, 0, 0.45); /* deprecated alias, removed alongside component swap */
   --font-sans: system-ui, -apple-system, sans-serif;
   --font-mono: ui-monospace, "SF Mono", monospace;
   --space-sm: 0.5rem;
@@ -101,6 +104,20 @@
   --color-handle: rgba(148, 163, 184, 0.35);
   --color-handle-strong: rgba(148, 163, 184, 0.55);
 
+  /* tile gloss — applied as background-image on top of background-color
+   * to give surfaces the soft top highlight seen in late-90s / early-00s
+   * console UIs (wii channels, ps2 browser, gamecube boot). */
+  --surface-gloss: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.06) 0%,
+    rgba(255, 255, 255, 0) 55%
+  );
+  --shadow-tile: 0 1px 2px rgba(0, 0, 0, 0.4), 0 16px 48px rgba(0, 0, 0, 0.5);
+  --shadow-tile-hover: 0 2px 4px rgba(0, 0, 0, 0.45),
+    0 24px 64px rgba(0, 0, 0, 0.55);
+  --ring-inset: inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    inset 0 0 0 1px rgba(148, 163, 184, 0.12);
+
   /* component-shaped semantics — promote here when a role doesn't
    * fit a generic name (e.g. the chat user bubble is conceptually
    * distinct from a generic strong-accent surface). prefer collapsing
@@ -148,6 +165,18 @@
 
   --color-handle: rgba(15, 23, 42, 0.25);
   --color-handle-strong: rgba(15, 23, 42, 0.40);
+
+  --surface-gloss: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.9) 0%,
+    rgba(255, 255, 255, 0) 50%
+  );
+  --shadow-tile: 0 1px 2px rgba(31, 41, 51, 0.08),
+    0 8px 24px rgba(31, 41, 51, 0.12);
+  --shadow-tile-hover: 0 2px 4px rgba(31, 41, 51, 0.1),
+    0 16px 40px rgba(31, 41, 51, 0.16);
+  --ring-inset: inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    inset 0 0 0 1px rgba(208, 220, 230, 0.6);
 
   --color-msg-user-bg: var(--blue-600);
 }
