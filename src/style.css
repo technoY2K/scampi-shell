@@ -100,6 +100,12 @@
   /* decorative — resize affordance */
   --color-handle: rgba(148, 163, 184, 0.35);
   --color-handle-strong: rgba(148, 163, 184, 0.55);
+
+  /* component-shaped semantics — promote here when a role doesn't
+   * fit a generic name (e.g. the chat user bubble is conceptually
+   * distinct from a generic strong-accent surface). prefer collapsing
+   * into existing semantics first; only add when nothing else fits. */
+  --color-msg-user-bg: var(--blue-700);
 }
 
 /* ---------------------------------------------------------------
@@ -142,6 +148,8 @@
 
   --color-handle: rgba(15, 23, 42, 0.25);
   --color-handle-strong: rgba(15, 23, 42, 0.40);
+
+  --color-msg-user-bg: var(--blue-600);
 }
 
 /* future: opt into prefers-color-scheme without explicit override
@@ -323,85 +331,11 @@ body {
   display: block;
 }
 
-/* ---------------------------------------------------------------
- * component-scoped aliases — forward semantic tokens into shadow roots
- * components read via their prefix so they can be overridden in
- * isolation later; default values resolve to semantic tokens here.
- * --------------------------------------------------------------- */
-room-window {
-  --rw-surface: var(--color-surface);
-  --rw-border: var(--color-border);
-  --rw-text: var(--color-text);
-  --rw-muted: var(--color-text-muted);
-  --rw-radius: var(--radius-md);
-  --rw-shadow: var(--shadow-window);
-  --rw-title-bg: var(--color-surface-raised);
-  --rw-err: var(--color-err);
-  --rw-err-bg: var(--color-err-bg);
-  --rw-handle: var(--color-handle);
-  --rw-handle-strong: var(--color-handle-strong);
-}
-
-chat-panel {
-  --cp-text: var(--color-text);
-  --cp-border: var(--color-border);
-  --cp-agent-bg: var(--color-surface-raised);
-  --cp-user-bg: var(--color-accent-strong);
-  --cp-composer-bg: var(--color-surface-sunken);
-  --cp-input-bg: var(--color-surface-deep);
-  --cp-accent: var(--color-accent);
-  --cp-on-accent: var(--color-on-accent);
-  --cp-focus: var(--color-focus-ring);
-  --cp-font: var(--font-sans);
-}
-
-settings-panel {
-  --sp-text: var(--color-text);
-  --sp-muted: var(--color-text-muted);
-  --sp-border: var(--color-border);
-  --sp-toolbar-bg: var(--color-surface-sunken);
-  --sp-pre-bg: var(--color-surface-deep);
-  --sp-accent: var(--color-accent);
-  --sp-on-accent: var(--color-on-accent);
-  --sp-err: var(--color-err);
-  --sp-font: var(--font-sans);
-}
-
-schedules-panel {
-  --sched-text: var(--color-text);
-  --sched-text-strong: var(--color-text-strong);
-  --sched-text-soft: var(--color-text-soft);
-  --sched-muted: var(--color-text-muted);
-  --sched-border: var(--color-border);
-  --sched-toolbar-bg: var(--color-surface-sunken);
-  --sched-card-bg: var(--color-surface-deep);
-  --sched-overlay-bg: var(--color-overlay);
-  --sched-hover-bg: var(--color-surface-hover);
-  --sched-accent: var(--color-accent);
-  --sched-on-accent: var(--color-on-accent);
-  --sched-ok: var(--color-ok);
-  --sched-ok-soft: var(--color-ok-soft);
-  --sched-ok-bg: var(--color-ok-bg);
-  --sched-err: var(--color-err);
-  --sched-warn: var(--color-warn);
-  --sched-warn-bg: var(--color-warn-bg);
-  --sched-neutral-bg: var(--color-neutral-bg);
-  --sched-font: var(--font-sans);
-}
-
+/* setup-panel sits above the FAB dock and floating windows.
+ * css custom properties inherit through shadow DOM, so all color tokens
+ * defined on :root reach inside every web component automatically — no
+ * per-component forwarding needed. */
 setup-panel {
-  --su-surface: var(--color-surface);
-  --su-border: var(--color-border);
-  --su-text: var(--color-text);
-  --su-muted: var(--color-text-muted);
-  --su-err: var(--color-err);
-  --su-accent: var(--color-accent);
-  --su-on-accent: var(--color-on-accent);
-  --su-input-bg: var(--color-surface-deep);
-  --su-scrim: var(--color-scrim);
-  --su-radius: var(--radius-md);
-  --su-shadow: var(--shadow-window);
-  --su-mono: var(--font-mono);
   z-index: 2000;
   position: relative;
 }

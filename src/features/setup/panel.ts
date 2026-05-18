@@ -32,15 +32,15 @@ export class SetupPanel extends HTMLElement {
         box-sizing: border-box;
         margin: auto;
         padding: 0;
-        border: 1px solid var(--su-border, #334155);
-        border-radius: var(--su-radius, 10px);
-        background: var(--su-surface, #111827);
-        color: var(--su-text, #f1f5f9);
-        box-shadow: var(--su-shadow, 0 24px 64px rgba(0, 0, 0, 0.55));
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-md);
+        background: var(--color-surface);
+        color: var(--color-text);
+        box-shadow: var(--shadow-window);
         width: min(92vw, 400px);
       }
       dialog::backdrop {
-        background: var(--su-scrim, rgba(2, 6, 23, 0.78));
+        background: var(--color-scrim);
       }
       .frame {
         padding: 1.15rem 1.1rem 1.1rem;
@@ -54,13 +54,13 @@ export class SetupPanel extends HTMLElement {
         margin: 0 0 1rem;
         font-size: 0.85rem;
         line-height: 1.45;
-        color: var(--su-muted, #94a3b8);
+        color: var(--color-text-muted);
       }
       label {
         display: block;
         font-size: 0.75rem;
         font-weight: 600;
-        color: var(--su-muted, #94a3b8);
+        color: var(--color-text-muted);
         margin-bottom: 0.35rem;
       }
       .field {
@@ -71,14 +71,14 @@ export class SetupPanel extends HTMLElement {
         box-sizing: border-box;
         padding: 0.5rem 0.55rem;
         border-radius: 8px;
-        border: 1px solid var(--su-border, #334155);
-        background: var(--su-input-bg, #020617);
-        color: var(--su-text, #f1f5f9);
-        font-family: var(--su-mono, ui-monospace, monospace);
+        border: 1px solid var(--color-border);
+        background: var(--color-surface-deep);
+        color: var(--color-text);
+        font-family: var(--font-mono);
         font-size: 0.8rem;
       }
       input:focus {
-        outline: 2px solid var(--su-accent, #3b82f6);
+        outline: 2px solid var(--color-focus-ring);
         outline-offset: 0;
       }
       .actions {
@@ -90,8 +90,8 @@ export class SetupPanel extends HTMLElement {
         padding: 0.5rem 1rem;
         border: none;
         border-radius: 8px;
-        background: var(--su-accent, #3b82f6);
-        color: var(--su-on-accent, #fff);
+        background: var(--color-accent);
+        color: var(--color-on-accent);
         font-weight: 600;
         font-size: 0.85rem;
         cursor: pointer;
@@ -106,7 +106,7 @@ export class SetupPanel extends HTMLElement {
       .err {
         margin: 0 0 0.75rem;
         font-size: 0.8rem;
-        color: var(--su-err, #f87171);
+        color: var(--color-err);
         min-height: 1.2em;
       }
     `;

@@ -38,11 +38,11 @@ export class RoomWindow extends HTMLElement {
         box-sizing: border-box;
         margin: 0;
         padding: 0;
-        border: 1px solid var(--rw-border, #334155);
-        border-radius: var(--rw-radius, 10px);
-        background: var(--rw-surface, #111827);
-        color: var(--rw-text, #f1f5f9);
-        box-shadow: var(--rw-shadow, 0 16px 48px rgba(0, 0, 0, 0.45));
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-md);
+        background: var(--color-surface);
+        color: var(--color-text);
+        box-shadow: var(--shadow-window);
         overflow: hidden;
         width: min(96vw, 420px);
         min-width: ${RESIZE_MIN_W}px;
@@ -67,13 +67,13 @@ export class RoomWindow extends HTMLElement {
         cursor: nwse-resize;
         touch-action: none;
         user-select: none;
-        border-bottom-right-radius: var(--rw-radius, 10px);
+        border-bottom-right-radius: var(--radius-md);
         background: linear-gradient(
           135deg,
           transparent 0%,
           transparent 50%,
-          var(--rw-handle, rgba(148, 163, 184, 0.35)) 50%,
-          var(--rw-handle, rgba(148, 163, 184, 0.35)) 100%
+          var(--color-handle) 50%,
+          var(--color-handle) 100%
         );
       }
       .resize-handle:hover {
@@ -81,8 +81,8 @@ export class RoomWindow extends HTMLElement {
           135deg,
           transparent 0%,
           transparent 45%,
-          var(--rw-handle-strong, rgba(148, 163, 184, 0.55)) 45%,
-          var(--rw-handle-strong, rgba(148, 163, 184, 0.55)) 100%
+          var(--color-handle-strong) 45%,
+          var(--color-handle-strong) 100%
         );
       }
       dialog[open]::backdrop {
@@ -94,8 +94,8 @@ export class RoomWindow extends HTMLElement {
         justify-content: space-between;
         gap: 0.5rem;
         padding: 0.5rem 0.65rem;
-        background: var(--rw-title-bg, #1e293b);
-        border-bottom: 1px solid var(--rw-border, #334155);
+        background: var(--color-surface-raised);
+        border-bottom: 1px solid var(--color-border);
         cursor: grab;
         user-select: none;
         flex-shrink: 0;
@@ -120,7 +120,7 @@ export class RoomWindow extends HTMLElement {
         border: none;
         border-radius: 6px;
         background: transparent;
-        color: var(--rw-muted, #94a3b8);
+        color: var(--color-text-muted);
         cursor: pointer;
         display: grid;
         place-items: center;
@@ -128,8 +128,8 @@ export class RoomWindow extends HTMLElement {
         line-height: 1;
       }
       .close-btn:hover {
-        background: var(--rw-err-bg, rgba(248, 113, 113, 0.15));
-        color: var(--rw-err, #f87171);
+        background: var(--color-err-bg);
+        color: var(--color-err);
       }
       .body {
         flex: 1;
