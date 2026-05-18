@@ -87,12 +87,33 @@ Or use `openclaw config set` if your CLI exposes these keys. See [Configuration]
 
 ## UI
 
-- **Status** — fixed top-right pill (`#status-shell`), driven by `GatewayClient` in `main.ts`.
+- **Topbar cluster** — fixed top-right (`.topbar-right`); flex row containing `<theme-toggle>` and the status pill (`#status-shell`).
+- **Status** — pill inside the topbar cluster, driven by `GatewayClient` in `main.ts`.
+- **`theme-toggle`** — small square button that cycles `system → light → dark → system`; see the Theming section.
 - **FAB dock** — fixed bottom-left (`#fab-dock`); horizontal row (macOS-dock style). **Chat**, **Settings**, and **Schedules** FABs each toggle their own `<room-window>`; active window shows green outline (`.fab-item--active`). `aria-pressed` tracks toggle state.
 - **`room-window`** — native `<dialog>` (non-modal `.show()`), title bar drag, z-index stacking, close dispatches `room-window-close` (bubbles, composed).
 - **`chat-panel`** — message list, textarea + Send; Enter sends, Shift+Enter newline. `addMessage("user" | "agent", text)` for future gateway hooks.
 - **`settings-panel`** — read-only settings view: pretty-printed JSON from `config.get`. States: waiting (gateway not ready), loading, error + Retry, loaded. Refresh on window open and after reconnect when the window stays open (`room-window-open` + `onHello` in `main.ts`).
 - **`setup-panel`** — first-run modal (Tauri only); validates URL (`ws://` or `wss://`), saves config via `saveGatewayConfig`, cannot be dismissed without valid input.
+
+## Theming
+
+Scampi Shell ships two palettes whose visual language deliberately evokes early-aughts glossy tile UIs — rounded, slightly glassy "channel tile" surfaces with one confident accent hue per theme. The language lands the "friendly companion" product principle: warmer, more playful, less corporate-SaaS than a generic slate dark mode.
+
+- **Dark — "Twilight"** — deep indigo-violet space, warm amber accent, coral err, peach warn, mint ok.
+- **Light — "Daylight"** — pale blue-white page, white tiles, warm slate text, aqua accent.
+
+The token tables (primitives + semantics, per-theme) live in `src/style.css` with per-token rationale comments. That file is the source of truth — never duplicate hex values elsewhere.
+
+### Rules
+
+- **Add tokens at the right tier.** Primitives are raw scales (`--violet-*`, `--aqua-*`, `--paper-*`, `--amber-*`, `--coral-*`, `--peach-*`, `--mint-*`, …) and are theme-agnostic. Semantics are role-based (`--color-accent`, `--color-text-muted`, `--color-surface-raised`, …) and themed. Components read semantics only; never reference a primitive from a component.
+- **Tile treatment is the shared visual language.** Any new "surface" (window, panel, card, button, pill, fab) should pick up the radius ramp plus the gloss stack — `background-image: var(--surface-gloss)` + `box-shadow: var(--shadow-tile)` (or `var(--shadow-tile), var(--ring-inset)` for the larger window-class tiles). Don't ship flat fills.
+- **Radius ramp.** `--radius-sm` (10px) for inputs / small chips, `--radius-md` (14px) for buttons / status pill, `--radius-lg` (20px) for `<room-window>` / `<setup-panel>` tiles, `--radius-pill` (999px) for pills.
+- **Chat user bubble uses different tokens per theme on purpose.** Light mode uses the aqua accent fill (`--color-msg-user-bg = --aqua-500`, white text). Dark mode uses a violet raised tint (`--color-msg-user-bg = --violet-750`, lavender text) so amber stays reserved for buttons / focus. The `--color-on-msg-user` semantic adapts text color across themes. Don't "simplify" this into a single token.
+- **System default + manual override.** With no `data-theme` attribute, CSS follows the user's OS preference via a `@media (prefers-color-scheme: light)` rule in `style.css` scoped to `:root:not([data-theme])`. Explicit `[data-theme="light"]` / `[data-theme="dark"]` always wins. The light token block is duplicated inside the media query on purpose — single-file maintenance over abstraction — so edit both blocks together.
+- **Theme toggle.** `<theme-toggle>` cycles `system → light → dark → system` and persists via `getConfigStore()` under key `theme.preference`. `bootstrap()` in `main.ts` applies the persisted preference before any other async work so the first paint matches the user's choice. Don't reach for `localStorage` directly.
+- **Retired tokens.** `--shadow-window` was replaced by the themed `--shadow-tile` / `--shadow-tile-hover`. Don't resurrect it.
 
 ## Project layout
 
@@ -132,6 +153,11 @@ src/
     setup/
       panel.ts               # <setup-panel> first-run gateway config modal
       controller.ts
+      index.ts
+    theme/
+      panel.ts               # <theme-toggle> cycles system → light → dark
+      apply.ts               # applyThemePreference sets/removes data-theme
+      preference.ts          # get/setThemePreference via getConfigStore()
       index.ts
 src-tauri/
   Cargo.toml                 # tauri 2, tauri-plugin-store 2, keyring 2

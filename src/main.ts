@@ -4,6 +4,8 @@ import "./features/chat/panel";
 import "./features/settings/panel";
 import "./features/schedules/panel";
 import "./features/setup/panel";
+import "./features/theme/panel";
+import { applyThemePreference, getThemePreference } from "./features/theme";
 import { loadGatewayConfig } from "./config/gateway-config";
 import { isTauri } from "./platform/runtime";
 import { runFirstRunSetup, type SetupPanel } from "./features/setup";
@@ -60,6 +62,11 @@ function setUi(status: string, detail: string, dataState: string): void {
 let gatewayClient: GatewayClient | null = null;
 
 async function bootstrap(): Promise<void> {
+  // apply theme before any other async work so the first paint matches
+  // the user's persisted preference (avoids a dark→light flash for users
+  // who picked light mode on a system that prefers dark, and vice versa).
+  applyThemePreference(await getThemePreference());
+
   let cfg = await loadGatewayConfig();
   if (isTauri() && !cfg) {
     await runFirstRunSetup(setupWindow);

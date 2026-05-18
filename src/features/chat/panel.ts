@@ -41,17 +41,19 @@ export class ChatPanel extends HTMLElement {
       }
       .msg {
         padding: 0.5rem 0.65rem;
-        border-radius: 10px;
+        border-radius: var(--radius-md);
         line-height: 1.45;
         white-space: pre-wrap;
         word-break: break-word;
+        background-image: var(--surface-gloss);
       }
       .msg-user {
-        background: var(--color-msg-user-bg);
-        color: var(--color-on-accent);
+        background-color: var(--color-msg-user-bg);
+        color: var(--color-on-msg-user);
+        box-shadow: var(--ring-inset);
       }
       .msg-agent {
-        background: var(--color-surface-raised);
+        background-color: var(--color-surface-raised);
         border: 1px solid var(--color-border);
       }
       .msg + .msg {
@@ -103,7 +105,7 @@ export class ChatPanel extends HTMLElement {
         max-height: 8rem;
         resize: vertical;
         border: 1px solid var(--color-border);
-        border-radius: 8px;
+        border-radius: var(--radius-sm);
         padding: 0.5rem 0.6rem;
         background: var(--color-surface-deep);
         color: inherit;
@@ -118,15 +120,20 @@ export class ChatPanel extends HTMLElement {
         flex-shrink: 0;
         padding: 0.5rem 0.85rem;
         border: none;
-        border-radius: 8px;
-        background: var(--color-accent);
+        border-radius: var(--radius-md);
+        background-color: var(--color-accent);
+        background-image: var(--surface-gloss);
         color: var(--color-on-accent);
         font-weight: 600;
         font-size: 0.8125rem;
         cursor: pointer;
+        box-shadow: var(--shadow-tile);
+        transition: box-shadow 0.15s ease, transform 0.15s ease;
       }
       button:hover {
         filter: brightness(1.08);
+        box-shadow: var(--shadow-tile-hover);
+        transform: translateY(-1px);
       }
       button:disabled {
         opacity: 0.45;

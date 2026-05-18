@@ -78,33 +78,43 @@ export class SchedulesPanel extends HTMLElement {
       button {
         padding: 0.45rem 0.75rem;
         border: none;
-        border-radius: 8px;
-        background: var(--color-accent);
+        border-radius: var(--radius-md);
+        background-color: var(--color-accent);
+        background-image: var(--surface-gloss);
         color: var(--color-on-accent);
         font-weight: 600;
         font-size: 0.8125rem;
         cursor: pointer;
+        box-shadow: var(--shadow-tile);
+        transition: box-shadow 0.15s ease, transform 0.15s ease;
       }
       button:hover:not(:disabled) {
         filter: brightness(1.08);
+        box-shadow: var(--shadow-tile-hover);
+        transform: translateY(-1px);
       }
       button:disabled {
         opacity: 0.45;
         cursor: not-allowed;
       }
       button.btn-run {
-        background: transparent;
+        background-color: transparent;
+        background-image: none;
         border: 1px solid var(--color-border);
         color: var(--color-text);
         font-weight: 500;
         padding: 0.3rem 0.55rem;
         font-size: 0.75rem;
         opacity: 1;
+        border-radius: var(--radius-sm);
+        box-shadow: none;
       }
       button.btn-run:hover:not(:disabled) {
         filter: none;
         border-color: var(--color-accent);
-        color: var(--color-on-accent);
+        color: var(--color-accent-strong);
+        transform: none;
+        box-shadow: none;
       }
       button.btn-run:disabled {
         opacity: 0.45;
@@ -125,7 +135,7 @@ export class SchedulesPanel extends HTMLElement {
         display: none;
         margin: 0 0.75rem 0.5rem;
         padding: 0.5rem 0.65rem;
-        border-radius: 8px;
+        border-radius: var(--radius-md);
         border: 1px solid var(--color-border);
         background: var(--color-warn-bg);
         color: var(--color-warn);
@@ -146,9 +156,11 @@ export class SchedulesPanel extends HTMLElement {
       }
       .card {
         padding: 0.65rem 0.75rem;
-        border-radius: 8px;
+        border-radius: var(--radius-md);
         border: 1px solid var(--color-border);
-        background: var(--color-surface-deep);
+        background-color: var(--color-surface-deep);
+        background-image: var(--surface-gloss);
+        box-shadow: var(--shadow-tile);
       }
       .card-title {
         display: flex;
@@ -170,7 +182,7 @@ export class SchedulesPanel extends HTMLElement {
         text-transform: uppercase;
         letter-spacing: 0.04em;
         padding: 0.2rem 0.45rem;
-        border-radius: 999px;
+        border-radius: var(--radius-pill);
       }
       .pill-on {
         background: var(--color-ok-bg);
@@ -271,17 +283,20 @@ export class SchedulesPanel extends HTMLElement {
         margin-left: auto;
         padding: 0;
         border: none;
-        border-radius: 6px;
+        border-radius: var(--radius-sm);
         background: transparent !important;
         color: var(--color-text-muted) !important;
         font-weight: 500;
         cursor: pointer;
         opacity: 1;
+        box-shadow: none;
       }
       .task-toggle:hover:not(:disabled) {
         filter: none;
         color: var(--color-text-strong);
         background: var(--color-surface-hover) !important;
+        box-shadow: none;
+        transform: none;
       }
       .task-chev {
         display: block;
@@ -293,7 +308,7 @@ export class SchedulesPanel extends HTMLElement {
       .task-full {
         margin-top: 0.4rem;
         padding: 0.5rem 0.55rem;
-        border-radius: 6px;
+        border-radius: var(--radius-sm);
         background: var(--color-overlay);
         border: 1px solid var(--color-border);
         color: var(--color-text-strong);

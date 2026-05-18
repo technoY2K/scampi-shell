@@ -36,16 +36,61 @@
   --red-400: #f87171;
   --red-600: #dc2626;
 
+  --amber-200: #ffd075; /* hover / accent-strong on dark */
   --amber-300: #fcd34d;
   --amber-400: #fbbf24;
+  --amber-500: #f5b942; /* warm amber highlight — dark accent */
   --amber-700: #b45309;
+
+  /* violet scale — twilight palette surfaces + text */
+  --violet-100: #e5e0f5;
+  --violet-200: #f5f1ff;
+  --violet-300: #c4bce0;
+  --violet-400: #8a82a8;
+  --violet-700: #3a3158;
+  --violet-750: #3d2f5c; /* chat user bubble in dark mode */
+  --violet-800: #2a2148;
+  --violet-900: #1f1838;
+  --violet-950: #0f0b1f;
+  --violet-deep: #0a0716;
+
+  /* coral / peach / mint — dark-mode status colors that sit nicely
+   * next to amber accent without fighting it for attention. */
+  --coral-400: #ff6b8a; /* err in dark */
+  --peach-400: #ff9a5c; /* warn in dark */
+  --mint-300: #a7eccb; /* ok-soft in dark */
+  --mint-400: #7eddb8; /* ok in dark */
+
+  /* aqua scale — daylight palette accent */
+  --aqua-400: #5cc1e8;
+  --aqua-500: #27a9e1; /* daylight aqua — light accent fill */
+  --aqua-600: #1d8ab8; /* darker aqua for accent text on white (AA) */
+
+  /* cool paper — daylight palette neutrals (slightly bluer than slate) */
+  --paper-50:  #ffffff;
+  --paper-75:  #f4f8fb;
+  --paper-100: #eaf2f9; /* page bg */
+  --paper-200: #e1ebf3;
+  --paper-300: #d4e1ec;
+  --paper-400: #d0dce6; /* border */
+  --paper-700: #5a6776; /* text-soft */
+  --paper-800: #3a4654; /* text */
+  --paper-900: #1f2933; /* text-strong */
+  --paper-muted: #8a96a4; /* text-muted */
+
+  /* warm-on-white status — readable against pure white */
+  --green-500: #2faa5f; /* ok on light */
+  --red-500: #d6383c; /* err on light */
+  --amber-600: #c47e10; /* warn on light */
 
   --color-black: #000;
   --color-white: #fff;
 
   /* layout / typography — theme-agnostic */
-  --radius-md: 10px;
-  --shadow-window: 0 16px 48px rgba(0, 0, 0, 0.45);
+  --radius-sm: 10px; /* inputs, small chips */
+  --radius-md: 14px; /* buttons, status pill, close affordances */
+  --radius-lg: 20px; /* room-window, setup-panel — the "tile" radius */
+  --radius-pill: 999px;
   --font-sans: system-ui, -apple-system, sans-serif;
   --font-mono: ui-monospace, "SF Mono", monospace;
   --space-sm: 0.5rem;
@@ -62,50 +107,66 @@
 :root[data-theme="dark"] {
   color-scheme: dark;
 
-  /* surfaces — depth increases inward (page → window → input) */
-  --color-bg: #0a0f1e; /* one-off page bg; step 3 will reconcile */
-  --color-surface: #111827; /* one-off window bg; step 3 will reconcile */
-  --color-surface-raised: var(--slate-800);
-  --color-surface-sunken: var(--slate-900);
-  --color-surface-deep: var(--slate-950);
-  --color-surface-hover: rgba(148, 163, 184, 0.12);
-  --color-scrim: rgba(2, 6, 23, 0.78);
-  --color-overlay: rgba(15, 23, 42, 0.85);
+  /* surfaces — twilight palette: deep indigo-violet ramp.
+   * depth increases inward (page → window → input). */
+  --color-bg: var(--violet-950);
+  --color-surface: var(--violet-900);
+  --color-surface-raised: var(--violet-800);
+  --color-surface-sunken: #15102a;
+  --color-surface-deep: var(--violet-deep);
+  --color-surface-hover: rgba(245, 185, 66, 0.10); /* amber tinge */
+  --color-scrim: rgba(5, 3, 12, 0.78);
+  --color-overlay: rgba(15, 11, 31, 0.85);
 
-  /* text */
-  --color-text: var(--slate-100);
-  --color-text-strong: var(--slate-200);
-  --color-text-soft: var(--slate-300);
-  --color-text-muted: var(--slate-400);
+  /* text — warm lavender, never pure white */
+  --color-text: var(--violet-100);
+  --color-text-strong: var(--violet-200);
+  --color-text-soft: var(--violet-300);
+  --color-text-muted: var(--violet-400);
 
-  --color-border: var(--slate-700);
+  --color-border: var(--violet-700);
 
-  /* accent / primary action */
-  --color-accent: var(--blue-500);
-  --color-accent-strong: var(--blue-700);
-  --color-on-accent: var(--color-white);
+  /* accent — warm amber highlight */
+  --color-accent: var(--amber-500);
+  --color-accent-strong: var(--amber-200);
+  --color-on-accent: #1a1330; /* dark violet text on amber, AAA */
 
-  /* status */
-  --color-ok: var(--green-400);
-  --color-ok-soft: var(--green-300);
-  --color-ok-bg: rgba(74, 222, 128, 0.15);
-  --color-err: var(--red-400);
-  --color-err-bg: rgba(248, 113, 113, 0.15);
-  --color-warn: var(--amber-300);
-  --color-warn-bg: rgba(251, 191, 36, 0.12);
-  --color-neutral-bg: rgba(148, 163, 184, 0.15);
+  /* status — coral err and peach warn keep their distance from amber */
+  --color-ok: var(--mint-400);
+  --color-ok-soft: var(--mint-300);
+  --color-ok-bg: rgba(126, 221, 184, 0.14);
+  --color-err: var(--coral-400);
+  --color-err-bg: rgba(255, 107, 138, 0.14);
+  --color-warn: var(--peach-400);
+  --color-warn-bg: rgba(255, 154, 92, 0.14);
+  --color-neutral-bg: rgba(196, 188, 224, 0.12);
 
-  --color-focus-ring: var(--blue-500);
+  --color-focus-ring: var(--amber-500);
 
   /* decorative — resize affordance */
-  --color-handle: rgba(148, 163, 184, 0.35);
-  --color-handle-strong: rgba(148, 163, 184, 0.55);
+  --color-handle: rgba(196, 188, 224, 0.30);
+  --color-handle-strong: rgba(196, 188, 224, 0.50);
+
+  /* tile gloss — applied as background-image on top of background-color
+   * to give surfaces the soft top highlight of an early-aughts glossy
+   * tile UI (rounded rectangles with a glassy top-edge sheen). */
+  --surface-gloss: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.06) 0%,
+    rgba(255, 255, 255, 0) 55%
+  );
+  --shadow-tile: 0 1px 2px rgba(0, 0, 0, 0.4), 0 16px 48px rgba(0, 0, 0, 0.5);
+  --shadow-tile-hover: 0 2px 4px rgba(0, 0, 0, 0.45),
+    0 24px 64px rgba(0, 0, 0, 0.55);
+  --ring-inset: inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    inset 0 0 0 1px rgba(58, 49, 88, 0.6);
 
   /* component-shaped semantics — promote here when a role doesn't
-   * fit a generic name (e.g. the chat user bubble is conceptually
-   * distinct from a generic strong-accent surface). prefer collapsing
-   * into existing semantics first; only add when nothing else fits. */
-  --color-msg-user-bg: var(--blue-700);
+   * fit a generic name. chat user bubble in dark mode uses a violet
+   * raised tint instead of the amber accent so the bubble keeps
+   * lavender body text and reserves amber for buttons/focus. */
+  --color-msg-user-bg: var(--violet-750);
+  --color-on-msg-user: var(--color-text); /* lavender on violet bubble */
 }
 
 /* ---------------------------------------------------------------
@@ -115,48 +176,127 @@
 :root[data-theme="light"] {
   color-scheme: light;
 
-  --color-bg: var(--slate-50);
-  --color-surface: var(--color-white);
-  --color-surface-raised: var(--slate-100);
-  --color-surface-sunken: var(--slate-100);
-  --color-surface-deep: var(--slate-50);
-  --color-surface-hover: rgba(15, 23, 42, 0.06);
-  --color-scrim: rgba(15, 23, 42, 0.38);
-  --color-overlay: rgba(15, 23, 42, 0.05);
+  /* surfaces — daylight palette: pale blue-white page, white tiles */
+  --color-bg: var(--paper-100);
+  --color-surface: var(--paper-50);
+  --color-surface-raised: var(--paper-75);
+  --color-surface-sunken: var(--paper-200);
+  --color-surface-deep: var(--paper-300);
+  --color-surface-hover: rgba(39, 169, 225, 0.10); /* aqua tinge */
+  --color-scrim: rgba(58, 100, 140, 0.32);
+  --color-overlay: rgba(31, 41, 51, 0.05);
 
-  --color-text: var(--slate-900);
-  --color-text-strong: var(--slate-950);
-  --color-text-soft: var(--slate-700);
-  --color-text-muted: var(--slate-500);
+  /* text — warm slate, never #000 */
+  --color-text: var(--paper-800);
+  --color-text-strong: var(--paper-900);
+  --color-text-soft: var(--paper-700);
+  --color-text-muted: var(--paper-muted);
 
-  --color-border: var(--slate-300);
+  --color-border: var(--paper-400);
 
-  --color-accent: var(--blue-600);
-  --color-accent-strong: var(--blue-700);
+  /* accent — daylight aqua. accent fills carry white text (use accent-
+   * strong for accent text/icons on white surfaces to keep AA contrast). */
+  --color-accent: var(--aqua-500);
+  --color-accent-strong: var(--aqua-600);
   --color-on-accent: var(--color-white);
 
-  --color-ok: var(--green-600);
-  --color-ok-soft: var(--green-700);
-  --color-ok-bg: rgba(22, 163, 74, 0.12);
-  --color-err: var(--red-600);
-  --color-err-bg: rgba(220, 38, 38, 0.10);
-  --color-warn: var(--amber-700);
-  --color-warn-bg: rgba(180, 83, 9, 0.10);
-  --color-neutral-bg: rgba(15, 23, 42, 0.08);
+  --color-ok: var(--green-500);
+  --color-ok-soft: var(--green-600);
+  --color-ok-bg: rgba(47, 170, 95, 0.10);
+  --color-err: var(--red-500);
+  --color-err-bg: rgba(214, 56, 60, 0.08);
+  --color-warn: var(--amber-600);
+  --color-warn-bg: rgba(232, 160, 32, 0.12);
+  --color-neutral-bg: rgba(31, 41, 51, 0.06);
 
-  --color-focus-ring: var(--blue-600);
+  --color-focus-ring: var(--aqua-500);
 
-  --color-handle: rgba(15, 23, 42, 0.25);
-  --color-handle-strong: rgba(15, 23, 42, 0.40);
+  --color-handle: rgba(31, 41, 51, 0.22);
+  --color-handle-strong: rgba(31, 41, 51, 0.38);
 
-  --color-msg-user-bg: var(--blue-600);
+  --surface-gloss: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.9) 0%,
+    rgba(255, 255, 255, 0) 50%
+  );
+  --shadow-tile: 0 1px 2px rgba(31, 41, 51, 0.08),
+    0 8px 24px rgba(31, 41, 51, 0.12);
+  --shadow-tile-hover: 0 2px 4px rgba(31, 41, 51, 0.1),
+    0 16px 40px rgba(31, 41, 51, 0.16);
+  --ring-inset: inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    inset 0 0 0 1px rgba(208, 220, 230, 0.6);
+
+  /* chat user bubble in light mode uses the aqua accent fill — classic
+   * im / glossy-dialog look (white text on aqua). */
+  --color-msg-user-bg: var(--aqua-500);
+  --color-on-msg-user: var(--color-on-accent); /* white on aqua bubble */
 }
 
-/* future: opt into prefers-color-scheme without explicit override
- * @media (prefers-color-scheme: light) {
- *   :root:not([data-theme]) { ... light overrides ... }
- * }
- */
+/* ---------------------------------------------------------------
+ * system preference — when no [data-theme] override is set, follow
+ * the user's os/browser preference. dark is the default (matches
+ * :root above), so we only need to flip to light here.
+ *
+ * the rule duplicates the light semantic block on purpose: css has
+ * no clean way to mix-in a rule body across selectors, and keeping
+ * the two declarations literally identical is easier to read than
+ * any abstraction (custom-property indirection, nested-where tricks,
+ * etc.). when editing, change both blocks together.
+ * --------------------------------------------------------------- */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme]) {
+    color-scheme: light;
+
+    --color-bg: var(--paper-100);
+    --color-surface: var(--paper-50);
+    --color-surface-raised: var(--paper-75);
+    --color-surface-sunken: var(--paper-200);
+    --color-surface-deep: var(--paper-300);
+    --color-surface-hover: rgba(39, 169, 225, 0.10);
+    --color-scrim: rgba(58, 100, 140, 0.32);
+    --color-overlay: rgba(31, 41, 51, 0.05);
+
+    --color-text: var(--paper-800);
+    --color-text-strong: var(--paper-900);
+    --color-text-soft: var(--paper-700);
+    --color-text-muted: var(--paper-muted);
+
+    --color-border: var(--paper-400);
+
+    --color-accent: var(--aqua-500);
+    --color-accent-strong: var(--aqua-600);
+    --color-on-accent: var(--color-white);
+
+    --color-ok: var(--green-500);
+    --color-ok-soft: var(--green-600);
+    --color-ok-bg: rgba(47, 170, 95, 0.10);
+    --color-err: var(--red-500);
+    --color-err-bg: rgba(214, 56, 60, 0.08);
+    --color-warn: var(--amber-600);
+    --color-warn-bg: rgba(232, 160, 32, 0.12);
+    --color-neutral-bg: rgba(31, 41, 51, 0.06);
+
+    --color-focus-ring: var(--aqua-500);
+
+    --color-handle: rgba(31, 41, 51, 0.22);
+    --color-handle-strong: rgba(31, 41, 51, 0.38);
+
+    --surface-gloss: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.9) 0%,
+      rgba(255, 255, 255, 0) 50%
+    );
+    --shadow-tile: 0 1px 2px rgba(31, 41, 51, 0.08),
+      0 8px 24px rgba(31, 41, 51, 0.12);
+    --shadow-tile-hover: 0 2px 4px rgba(31, 41, 51, 0.1),
+      0 16px 40px rgba(31, 41, 51, 0.16);
+    --ring-inset: inset 0 1px 0 rgba(255, 255, 255, 0.9),
+      inset 0 0 0 1px rgba(208, 220, 230, 0.6);
+
+    --color-msg-user-bg: var(--aqua-500);
+    --color-on-msg-user: var(--color-on-accent);
+  }
+}
 
 html {
   font-family: var(--font-sans);
@@ -196,19 +336,27 @@ body {
   margin-top: 0.15rem;
 }
 
-/* status indicator — fixed top-right */
-.status-shell {
+/* top-right cluster — theme toggle + connection status pill */
+.topbar-right {
   position: fixed;
   top: var(--space-md);
   right: var(--space-md);
   z-index: 50;
   display: flex;
   align-items: center;
+  gap: 0.5rem;
+}
+
+.status-shell {
+  display: flex;
+  align-items: center;
   gap: 0.45rem;
   padding: 0.35rem 0.6rem;
-  border-radius: 999px;
-  background: var(--color-surface);
+  border-radius: var(--radius-pill);
+  background-color: var(--color-surface);
+  background-image: var(--surface-gloss);
   border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-tile);
   font-size: 0.75rem;
   color: var(--color-text-muted);
   max-width: min(50vw, 18rem);
@@ -285,21 +433,24 @@ body {
   flex-shrink: 0;
   border-radius: 50%;
   border: 1px solid var(--color-border);
-  background: var(--color-surface);
+  background-color: var(--color-surface);
+  background-image: var(--surface-gloss);
   color: var(--color-text);
-  box-shadow: var(--shadow-window);
+  box-shadow: var(--shadow-tile);
   cursor: pointer;
   display: grid;
   place-items: center;
   transition:
     transform 0.15s ease,
-    background 0.15s ease;
+    background-color 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
 .fab-item:hover {
   transform: scale(1.05);
-  background: var(--color-surface-raised);
+  background-color: var(--color-surface-raised);
   color: var(--color-accent);
+  box-shadow: var(--shadow-tile-hover);
 }
 
 .fab-item:focus-visible {

@@ -53,15 +53,20 @@ export class SettingsPanel extends HTMLElement {
       button {
         padding: 0.45rem 0.75rem;
         border: none;
-        border-radius: 8px;
-        background: var(--color-accent);
+        border-radius: var(--radius-md);
+        background-color: var(--color-accent);
+        background-image: var(--surface-gloss);
         color: var(--color-on-accent);
         font-weight: 600;
         font-size: 0.8125rem;
         cursor: pointer;
+        box-shadow: var(--shadow-tile);
+        transition: box-shadow 0.15s ease, transform 0.15s ease;
       }
       button:hover:not(:disabled) {
         filter: brightness(1.08);
+        box-shadow: var(--shadow-tile-hover);
+        transform: translateY(-1px);
       }
       button:disabled {
         opacity: 0.45;
@@ -104,7 +109,7 @@ export class SettingsPanel extends HTMLElement {
       pre {
         margin: 0;
         padding: 0.65rem;
-        border-radius: 8px;
+        border-radius: var(--radius-sm);
         border: 1px solid var(--color-border);
         background: var(--color-surface-deep);
         font-family: var(--font-mono);

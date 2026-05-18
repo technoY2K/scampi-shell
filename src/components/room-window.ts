@@ -39,10 +39,11 @@ export class RoomWindow extends HTMLElement {
         margin: 0;
         padding: 0;
         border: 1px solid var(--color-border);
-        border-radius: var(--radius-md);
-        background: var(--color-surface);
+        border-radius: var(--radius-lg);
+        background-color: var(--color-surface);
+        background-image: var(--surface-gloss);
         color: var(--color-text);
-        box-shadow: var(--shadow-window);
+        box-shadow: var(--shadow-tile), var(--ring-inset);
         overflow: hidden;
         width: min(96vw, 420px);
         min-width: ${RESIZE_MIN_W}px;
@@ -67,7 +68,7 @@ export class RoomWindow extends HTMLElement {
         cursor: nwse-resize;
         touch-action: none;
         user-select: none;
-        border-bottom-right-radius: var(--radius-md);
+        border-bottom-right-radius: var(--radius-lg);
         background: linear-gradient(
           135deg,
           transparent 0%,
@@ -94,7 +95,10 @@ export class RoomWindow extends HTMLElement {
         justify-content: space-between;
         gap: 0.5rem;
         padding: 0.5rem 0.65rem;
-        background: var(--color-surface-raised);
+        /* transparent so the dialog's --surface-gloss highlight shines
+         * through the top of the tile (the glassy top-edge band that
+         * defines the early-aughts tile look lives here). */
+        background: transparent;
         border-bottom: 1px solid var(--color-border);
         cursor: grab;
         user-select: none;
@@ -118,7 +122,7 @@ export class RoomWindow extends HTMLElement {
         width: 1.75rem;
         height: 1.75rem;
         border: none;
-        border-radius: 6px;
+        border-radius: var(--radius-sm);
         background: transparent;
         color: var(--color-text-muted);
         cursor: pointer;
