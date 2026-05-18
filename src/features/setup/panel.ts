@@ -33,10 +33,11 @@ export class SetupPanel extends HTMLElement {
         margin: auto;
         padding: 0;
         border: 1px solid var(--color-border);
-        border-radius: var(--radius-md);
-        background: var(--color-surface);
+        border-radius: var(--radius-lg);
+        background-color: var(--color-surface);
+        background-image: var(--surface-gloss);
         color: var(--color-text);
-        box-shadow: var(--shadow-window);
+        box-shadow: var(--shadow-tile), var(--ring-inset);
         width: min(92vw, 400px);
       }
       dialog::backdrop {
@@ -70,7 +71,7 @@ export class SetupPanel extends HTMLElement {
         width: 100%;
         box-sizing: border-box;
         padding: 0.5rem 0.55rem;
-        border-radius: 8px;
+        border-radius: var(--radius-sm);
         border: 1px solid var(--color-border);
         background: var(--color-surface-deep);
         color: var(--color-text);
@@ -89,12 +90,14 @@ export class SetupPanel extends HTMLElement {
       button[type="submit"] {
         padding: 0.5rem 1rem;
         border: none;
-        border-radius: 8px;
-        background: var(--color-accent);
+        border-radius: var(--radius-md);
+        background-color: var(--color-accent);
+        background-image: var(--surface-gloss);
         color: var(--color-on-accent);
         font-weight: 600;
         font-size: 0.85rem;
         cursor: pointer;
+        box-shadow: var(--shadow-tile);
       }
       button[type="submit"]:hover:not(:disabled) {
         filter: brightness(1.08);

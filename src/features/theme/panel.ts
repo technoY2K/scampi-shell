@@ -55,17 +55,21 @@ export class ThemeToggle extends HTMLElement {
         padding: 0;
         border: 1px solid var(--color-border);
         border-radius: var(--radius-md);
-        background: var(--color-surface);
+        background-color: var(--color-surface);
+        background-image: var(--surface-gloss);
         color: var(--color-text-soft);
         cursor: pointer;
+        box-shadow: var(--shadow-tile);
         transition:
-          background 0.15s ease,
+          background-color 0.15s ease,
           color 0.15s ease,
-          transform 0.15s ease;
+          transform 0.15s ease,
+          box-shadow 0.15s ease;
       }
       button:hover {
         color: var(--color-accent-strong);
         transform: translateY(-1px);
+        box-shadow: var(--shadow-tile-hover);
       }
       button:focus-visible {
         outline: 2px solid var(--color-focus-ring);

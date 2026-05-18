@@ -91,7 +91,6 @@
   --radius-md: 14px; /* buttons, status pill, close affordances */
   --radius-lg: 20px; /* room-window, setup-panel — the "tile" radius */
   --radius-pill: 999px;
-  --shadow-window: 0 16px 48px rgba(0, 0, 0, 0.45); /* deprecated alias, removed alongside component swap */
   --font-sans: system-ui, -apple-system, sans-serif;
   --font-mono: ui-monospace, "SF Mono", monospace;
   --space-sm: 0.5rem;
@@ -167,6 +166,7 @@
    * raised tint instead of the amber accent so the bubble keeps
    * lavender body text and reserves amber for buttons/focus. */
   --color-msg-user-bg: var(--violet-750);
+  --color-on-msg-user: var(--color-text); /* lavender on violet bubble */
 }
 
 /* ---------------------------------------------------------------
@@ -229,6 +229,7 @@
   /* chat user bubble in light mode uses the aqua accent fill — classic
    * IM / console-dialog look (white text on aqua). */
   --color-msg-user-bg: var(--aqua-500);
+  --color-on-msg-user: var(--color-on-accent); /* white on aqua bubble */
 }
 
 /* ---------------------------------------------------------------
@@ -293,6 +294,7 @@
       inset 0 0 0 1px rgba(208, 220, 230, 0.6);
 
     --color-msg-user-bg: var(--aqua-500);
+    --color-on-msg-user: var(--color-on-accent);
   }
 }
 
@@ -351,8 +353,10 @@ body {
   gap: 0.45rem;
   padding: 0.35rem 0.6rem;
   border-radius: var(--radius-pill);
-  background: var(--color-surface);
+  background-color: var(--color-surface);
+  background-image: var(--surface-gloss);
   border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-tile);
   font-size: 0.75rem;
   color: var(--color-text-muted);
   max-width: min(50vw, 18rem);
@@ -429,21 +433,24 @@ body {
   flex-shrink: 0;
   border-radius: 50%;
   border: 1px solid var(--color-border);
-  background: var(--color-surface);
+  background-color: var(--color-surface);
+  background-image: var(--surface-gloss);
   color: var(--color-text);
-  box-shadow: var(--shadow-window);
+  box-shadow: var(--shadow-tile);
   cursor: pointer;
   display: grid;
   place-items: center;
   transition:
     transform 0.15s ease,
-    background 0.15s ease;
+    background-color 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
 .fab-item:hover {
   transform: scale(1.05);
-  background: var(--color-surface-raised);
+  background-color: var(--color-surface-raised);
   color: var(--color-accent);
+  box-shadow: var(--shadow-tile-hover);
 }
 
 .fab-item:focus-visible {
