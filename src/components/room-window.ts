@@ -96,8 +96,8 @@ export class RoomWindow extends HTMLElement {
         gap: 0.5rem;
         padding: 0.5rem 0.65rem;
         /* transparent so the dialog's --surface-gloss highlight shines
-         * through the top of the tile (the "glass" effect of wii / ps2
-         * channel tiles lives in this band). */
+         * through the top of the tile (the glassy top-edge band that
+         * defines the early-aughts tile look lives here). */
         background: transparent;
         border-bottom: 1px solid var(--color-border);
         cursor: grab;

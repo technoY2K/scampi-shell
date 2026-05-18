@@ -7,8 +7,8 @@ const CYCLE: readonly ThemePreference[] = ["system", "light", "dark"] as const;
 
 const LABELS: Record<ThemePreference, string> = {
   system: "Theme: follows system",
-  light: "Theme: light (Wii daylight)",
-  dark: "Theme: dark (GameCube twilight)",
+  light: "Theme: light",
+  dark: "Theme: dark",
 };
 
 const ICONS: Record<ThemePreference, string> = {
