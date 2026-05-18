@@ -23,15 +23,15 @@ export class SettingsPanel extends HTMLElement {
         min-height: 0;
         min-width: 0;
         height: 100%;
-        font-family: var(--sp-font, system-ui, sans-serif);
+        font-family: var(--font-sans);
         font-size: 0.875rem;
-        color: var(--sp-text, #f1f5f9);
+        color: var(--color-text);
       }
       .toolbar {
         flex-shrink: 0;
         padding: 0.75rem;
-        border-bottom: 1px solid var(--sp-border, #334155);
-        background: var(--sp-toolbar-bg, #0f172a);
+        border-bottom: 1px solid var(--color-border);
+        background: var(--color-surface-sunken);
       }
       h1 {
         margin: 0 0 0.35rem;
@@ -42,7 +42,7 @@ export class SettingsPanel extends HTMLElement {
         margin: 0 0 0.65rem;
         font-size: 0.8125rem;
         line-height: 1.45;
-        color: var(--sp-muted, #94a3b8);
+        color: var(--color-text-muted);
       }
       .actions {
         display: flex;
@@ -54,8 +54,8 @@ export class SettingsPanel extends HTMLElement {
         padding: 0.45rem 0.75rem;
         border: none;
         border-radius: 8px;
-        background: var(--sp-accent, #3b82f6);
-        color: #fff;
+        background: var(--color-accent);
+        color: var(--color-on-accent);
         font-weight: 600;
         font-size: 0.8125rem;
         cursor: pointer;
@@ -77,7 +77,7 @@ export class SettingsPanel extends HTMLElement {
       .status {
         margin: 0;
         padding: 0.75rem;
-        color: var(--sp-muted, #94a3b8);
+        color: var(--color-text-muted);
       }
       .error-wrap {
         padding: 0 0.75rem 0.75rem;
@@ -88,7 +88,7 @@ export class SettingsPanel extends HTMLElement {
       }
       .error-msg {
         margin: 0 0 0.5rem;
-        color: #f87171;
+        color: var(--color-err);
       }
       .pre-wrap {
         flex: 1;
@@ -105,9 +105,9 @@ export class SettingsPanel extends HTMLElement {
         margin: 0;
         padding: 0.65rem;
         border-radius: 8px;
-        border: 1px solid var(--sp-border, #334155);
-        background: var(--sp-pre-bg, #020617);
-        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        border: 1px solid var(--color-border);
+        background: var(--color-surface-deep);
+        font-family: var(--font-mono);
         font-size: 0.75rem;
         line-height: 1.45;
         white-space: pre-wrap;

@@ -27,9 +27,9 @@ export class ChatPanel extends HTMLElement {
         min-height: 0;
         min-width: 0;
         height: 100%;
-        font-family: var(--cp-font, system-ui, sans-serif);
+        font-family: var(--font-sans);
         font-size: 0.875rem;
-        color: var(--cp-text, #f1f5f9);
+        color: var(--color-text);
       }
       .list {
         flex: 1;
@@ -47,12 +47,12 @@ export class ChatPanel extends HTMLElement {
         word-break: break-word;
       }
       .msg-user {
-        background: var(--cp-user-bg, #1d4ed8);
-        color: #fff;
+        background: var(--color-msg-user-bg);
+        color: var(--color-on-accent);
       }
       .msg-agent {
-        background: var(--cp-agent-bg, #1e293b);
-        border: 1px solid var(--cp-border, #334155);
+        background: var(--color-surface-raised);
+        border: 1px solid var(--color-border);
       }
       .msg + .msg {
         margin-top: 0.5rem;
@@ -73,7 +73,7 @@ export class ChatPanel extends HTMLElement {
         font-size: 0.75rem;
         text-transform: uppercase;
         letter-spacing: 0.05em;
-        color: var(--cp-text, #f1f5f9);
+        color: var(--color-text);
         opacity: 0.5;
         padding: 0.5rem 0 1rem;
       }
@@ -93,8 +93,8 @@ export class ChatPanel extends HTMLElement {
         display: flex;
         gap: 0.5rem;
         padding: 0.65rem;
-        border-top: 1px solid var(--cp-border, #334155);
-        background: var(--cp-composer-bg, #0f172a);
+        border-top: 1px solid var(--color-border);
+        background: var(--color-surface-sunken);
         align-items: flex-end;
       }
       textarea {
@@ -102,16 +102,16 @@ export class ChatPanel extends HTMLElement {
         min-height: 2.5rem;
         max-height: 8rem;
         resize: vertical;
-        border: 1px solid var(--cp-border, #334155);
+        border: 1px solid var(--color-border);
         border-radius: 8px;
         padding: 0.5rem 0.6rem;
-        background: var(--cp-input-bg, #020617);
+        background: var(--color-surface-deep);
         color: inherit;
         font: inherit;
         line-height: 1.4;
       }
       textarea:focus {
-        outline: 2px solid var(--cp-focus, #3b82f6);
+        outline: 2px solid var(--color-focus-ring);
         outline-offset: 1px;
       }
       button {
@@ -119,8 +119,8 @@ export class ChatPanel extends HTMLElement {
         padding: 0.5rem 0.85rem;
         border: none;
         border-radius: 8px;
-        background: var(--cp-accent, #3b82f6);
-        color: #fff;
+        background: var(--color-accent);
+        color: var(--color-on-accent);
         font-weight: 600;
         font-size: 0.8125rem;
         cursor: pointer;
@@ -143,7 +143,7 @@ export class ChatPanel extends HTMLElement {
         width: 7px;
         height: 7px;
         border-radius: 50%;
-        background: var(--cp-text, #f1f5f9);
+        background: var(--color-text);
         opacity: 0.4;
         animation: typing-bounce 1.2s ease-in-out infinite;
       }

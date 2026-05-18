@@ -48,15 +48,15 @@ export class SchedulesPanel extends HTMLElement {
         min-height: 0;
         min-width: 0;
         height: 100%;
-        font-family: var(--sched-font, system-ui, sans-serif);
+        font-family: var(--font-sans);
         font-size: 0.875rem;
-        color: var(--sched-text, #f1f5f9);
+        color: var(--color-text);
       }
       .toolbar {
         flex-shrink: 0;
         padding: 0.75rem;
-        border-bottom: 1px solid var(--sched-border, #334155);
-        background: var(--sched-toolbar-bg, #0f172a);
+        border-bottom: 1px solid var(--color-border);
+        background: var(--color-surface-sunken);
       }
       h1 {
         margin: 0 0 0.35rem;
@@ -67,7 +67,7 @@ export class SchedulesPanel extends HTMLElement {
         margin: 0 0 0.65rem;
         font-size: 0.8125rem;
         line-height: 1.45;
-        color: var(--sched-muted, #94a3b8);
+        color: var(--color-text-muted);
       }
       .actions {
         display: flex;
@@ -79,8 +79,8 @@ export class SchedulesPanel extends HTMLElement {
         padding: 0.45rem 0.75rem;
         border: none;
         border-radius: 8px;
-        background: var(--sched-accent, #3b82f6);
-        color: #fff;
+        background: var(--color-accent);
+        color: var(--color-on-accent);
         font-weight: 600;
         font-size: 0.8125rem;
         cursor: pointer;
@@ -94,8 +94,8 @@ export class SchedulesPanel extends HTMLElement {
       }
       button.btn-run {
         background: transparent;
-        border: 1px solid var(--sched-border, #334155);
-        color: var(--sched-text, #e2e8f0);
+        border: 1px solid var(--color-border);
+        color: var(--color-text);
         font-weight: 500;
         padding: 0.3rem 0.55rem;
         font-size: 0.75rem;
@@ -103,8 +103,8 @@ export class SchedulesPanel extends HTMLElement {
       }
       button.btn-run:hover:not(:disabled) {
         filter: none;
-        border-color: var(--sched-accent, #3b82f6);
-        color: #fff;
+        border-color: var(--color-accent);
+        color: var(--color-on-accent);
       }
       button.btn-run:disabled {
         opacity: 0.45;
@@ -119,16 +119,16 @@ export class SchedulesPanel extends HTMLElement {
       .status {
         margin: 0;
         padding: 0.75rem;
-        color: var(--sched-muted, #94a3b8);
+        color: var(--color-text-muted);
       }
       .banner {
         display: none;
         margin: 0 0.75rem 0.5rem;
         padding: 0.5rem 0.65rem;
         border-radius: 8px;
-        border: 1px solid var(--sched-border, #334155);
-        background: rgba(251, 191, 36, 0.12);
-        color: #fcd34d;
+        border: 1px solid var(--color-border);
+        background: var(--color-warn-bg);
+        color: var(--color-warn);
         font-size: 0.8125rem;
         line-height: 1.4;
       }
@@ -147,8 +147,8 @@ export class SchedulesPanel extends HTMLElement {
       .card {
         padding: 0.65rem 0.75rem;
         border-radius: 8px;
-        border: 1px solid var(--sched-border, #334155);
-        background: var(--sched-card-bg, #020617);
+        border: 1px solid var(--color-border);
+        background: var(--color-surface-deep);
       }
       .card-title {
         display: flex;
@@ -173,12 +173,12 @@ export class SchedulesPanel extends HTMLElement {
         border-radius: 999px;
       }
       .pill-on {
-        background: rgba(74, 222, 128, 0.15);
-        color: #4ade80;
+        background: var(--color-ok-bg);
+        color: var(--color-ok);
       }
       .pill-off {
-        background: rgba(148, 163, 184, 0.15);
-        color: #94a3b8;
+        background: var(--color-neutral-bg);
+        color: var(--color-text-muted);
       }
       .run-row {
         display: flex;
@@ -189,30 +189,30 @@ export class SchedulesPanel extends HTMLElement {
       }
       .run-status {
         font-size: 0.75rem;
-        color: var(--sched-muted, #94a3b8);
+        color: var(--color-text-muted);
         min-height: 1.2em;
         flex: 1;
         min-width: 0;
       }
       .run-status.error {
-        color: #f87171;
+        color: var(--color-err);
       }
       .run-status.ok {
-        color: #86efac;
+        color: var(--color-ok-soft);
       }
       .meta {
         font-size: 0.75rem;
         line-height: 1.5;
-        color: var(--sched-muted, #94a3b8);
+        color: var(--color-text-muted);
       }
       .meta strong {
-        color: #cbd5e1;
+        color: var(--color-text-soft);
         font-weight: 500;
       }
       .empty {
         text-align: center;
         padding: 1.25rem 0.5rem;
-        color: var(--sched-muted, #94a3b8);
+        color: var(--color-text-muted);
         font-size: 0.8125rem;
         line-height: 1.5;
       }
@@ -220,7 +220,7 @@ export class SchedulesPanel extends HTMLElement {
         margin: 0;
         padding: 0 0.75rem 0.75rem;
         font-size: 0.75rem;
-        color: var(--sched-muted, #94a3b8);
+        color: var(--color-text-muted);
         display: none;
       }
       .footnote.visible {
@@ -235,12 +235,12 @@ export class SchedulesPanel extends HTMLElement {
       }
       .error-msg {
         margin: 0 0 0.5rem;
-        color: #f87171;
+        color: var(--color-err);
       }
       .task-block {
         margin-top: 0.45rem;
         padding-top: 0.45rem;
-        border-top: 1px solid var(--sched-border, #334155);
+        border-top: 1px solid var(--color-border);
       }
       .task-head {
         display: flex;
@@ -249,10 +249,10 @@ export class SchedulesPanel extends HTMLElement {
         flex-wrap: wrap;
         font-size: 0.75rem;
         line-height: 1.5;
-        color: var(--sched-muted, #94a3b8);
+        color: var(--color-text-muted);
       }
       .task-head strong {
-        color: #cbd5e1;
+        color: var(--color-text-soft);
         font-weight: 500;
       }
       .task-preview {
@@ -273,15 +273,15 @@ export class SchedulesPanel extends HTMLElement {
         border: none;
         border-radius: 6px;
         background: transparent !important;
-        color: var(--sched-muted, #94a3b8) !important;
+        color: var(--color-text-muted) !important;
         font-weight: 500;
         cursor: pointer;
         opacity: 1;
       }
       .task-toggle:hover:not(:disabled) {
         filter: none;
-        color: #e2e8f0;
-        background: rgba(148, 163, 184, 0.12) !important;
+        color: var(--color-text-strong);
+        background: var(--color-surface-hover) !important;
       }
       .task-chev {
         display: block;
@@ -294,9 +294,9 @@ export class SchedulesPanel extends HTMLElement {
         margin-top: 0.4rem;
         padding: 0.5rem 0.55rem;
         border-radius: 6px;
-        background: rgba(15, 23, 42, 0.85);
-        border: 1px solid var(--sched-border, #334155);
-        color: #e2e8f0;
+        background: var(--color-overlay);
+        border: 1px solid var(--color-border);
+        color: var(--color-text-strong);
         font-size: 0.75rem;
         line-height: 1.45;
         white-space: pre-wrap;
