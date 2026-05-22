@@ -3,14 +3,6 @@ import { formatOptionalWhen, formatScheduleLine, getTaskPreviewInfo } from "./fo
 
 const TAG = "schedules-panel";
 
-function escapeHtml(s: string): string {
-  return s
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;");
-}
-
 type CardParts = {
   meta: HTMLDivElement;
   runBtn: HTMLButtonElement;
@@ -221,6 +213,51 @@ export class SchedulesPanel extends HTMLElement {
         color: var(--color-text-soft);
         font-weight: 500;
       }
+      .meta-line {
+        margin: 0;
+      }
+      .meta-line + .meta-line {
+        margin-top: 0;
+      }
+      .meta-id-row {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        max-width: 100%;
+      }
+      .meta-id-value {
+        font-family: var(--font-mono, ui-monospace, monospace);
+        word-break: break-all;
+      }
+      .copy-btn {
+        flex-shrink: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 1.4rem;
+        height: 1.4rem;
+        margin: 0;
+        padding: 0;
+        border: none;
+        border-radius: var(--radius-sm);
+        background: transparent !important;
+        color: var(--color-text-muted) !important;
+        font-weight: 500;
+        cursor: pointer;
+        opacity: 1;
+        box-shadow: none;
+      }
+      .copy-btn:hover:not(:disabled) {
+        filter: none;
+        color: var(--color-text-strong);
+        background: var(--color-surface-hover) !important;
+        box-shadow: none;
+        transform: none;
+      }
+      .meta-id-value.copied {
+        color: var(--color-ok-soft);
+        font-family: var(--font-sans);
+      }
       .empty {
         text-align: center;
         padding: 1.25rem 0.5rem;
@@ -385,27 +422,114 @@ export class SchedulesPanel extends HTMLElement {
     this.cardParts.clear();
   }
 
-  private formatMetaHtml(job: CronJobRow, locale: string): string {
+  private createCopyIcon(): SVGSVGElement {
+    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.setAttribute("class", "copy-icon");
+    svg.setAttribute("viewBox", "0 0 24 24");
+    svg.setAttribute("width", "14");
+    svg.setAttribute("height", "14");
+    svg.setAttribute("fill", "none");
+    svg.setAttribute("stroke", "currentColor");
+    svg.setAttribute("stroke-width", "2");
+    svg.setAttribute("stroke-linecap", "round");
+    svg.setAttribute("stroke-linejoin", "round");
+    svg.setAttribute("aria-hidden", "true");
+    const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+    rect.setAttribute("x", "9");
+    rect.setAttribute("y", "9");
+    rect.setAttribute("width", "13");
+    rect.setAttribute("height", "13");
+    rect.setAttribute("rx", "2");
+    rect.setAttribute("ry", "2");
+    const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    path.setAttribute("d", "M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1");
+    svg.append(rect, path);
+    return svg;
+  }
+
+  private readonly copyResetTimers = new WeakMap<HTMLSpanElement, number>();
+
+  private createCopyButton(text: string, idValue: HTMLSpanElement): HTMLButtonElement {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "copy-btn";
+    btn.setAttribute("aria-label", "Copy job id");
+    btn.append(this.createCopyIcon());
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      void this.copyText(text, idValue);
+    });
+    return btn;
+  }
+
+  private showCopiedFeedback(text: string, idValue: HTMLSpanElement): void {
+    const prev = this.copyResetTimers.get(idValue);
+    if (prev !== undefined) {
+      window.clearTimeout(prev);
+    }
+    idValue.textContent = "Copied";
+    idValue.classList.add("copied");
+    const timer = window.setTimeout(() => {
+      idValue.textContent = text;
+      idValue.classList.remove("copied");
+      this.copyResetTimers.delete(idValue);
+    }, 750);
+    this.copyResetTimers.set(idValue, timer);
+  }
+
+  private async copyText(text: string, idValue: HTMLSpanElement): Promise<void> {
+    try {
+      await navigator.clipboard.writeText(text);
+      this.showCopiedFeedback(text, idValue);
+    } catch {
+      // leave id visible; no flash on failure
+    }
+  }
+
+  private appendMetaLine(meta: HTMLDivElement, label: string, content: Node | string): void {
+    const line = document.createElement("div");
+    line.className = "meta-line";
+    const strong = document.createElement("strong");
+    strong.textContent = `${label}:`;
+    line.append(strong, document.createTextNode(" "));
+    if (typeof content === "string") {
+      line.append(document.createTextNode(content));
+    } else {
+      line.append(content);
+    }
+    meta.append(line);
+  }
+
+  private buildMetaElement(job: CronJobRow, locale: string): HTMLDivElement {
+    const meta = document.createElement("div");
+    meta.className = "meta";
+
+    const idRow = document.createElement("span");
+    idRow.className = "meta-id-row";
+    const idValue = document.createElement("span");
+    idValue.className = "meta-id-value";
+    idValue.textContent = job.id;
+    idRow.append(idValue, this.createCopyButton(job.id, idValue));
+    this.appendMetaLine(meta, "job id", idRow);
+
     const scheduleLine = formatScheduleLine(job.schedule);
-    const nextAt = job.state?.nextRunAtMs;
+    this.appendMetaLine(meta, "when", scheduleLine);
+    this.appendMetaLine(meta, "next run", formatOptionalWhen(job.state?.nextRunAtMs, locale));
+
     const lastAt = job.state?.lastRunAtMs;
-    const lastSt = job.state?.lastRunStatus ?? job.state?.lastStatus;
-    const parts: string[] = [];
-    parts.push(`<strong>when:</strong> ${escapeHtml(scheduleLine)}`);
-    parts.push(`<strong>next run:</strong> ${escapeHtml(formatOptionalWhen(nextAt, locale))}`);
     if (lastAt !== undefined) {
-      parts.push(
-        `<strong>last run:</strong> ${escapeHtml(formatOptionalWhen(lastAt, locale))}` +
-          (lastSt ? ` · ${escapeHtml(lastSt)}` : ""),
-      );
+      const lastSt = job.state?.lastRunStatus ?? job.state?.lastStatus;
+      const lastRunText =
+        formatOptionalWhen(lastAt, locale) + (lastSt ? ` · ${lastSt}` : "");
+      this.appendMetaLine(meta, "last run", lastRunText);
     }
     if (job.state?.lastError) {
-      parts.push(`<strong>last issue:</strong> ${escapeHtml(job.state.lastError)}`);
+      this.appendMetaLine(meta, "last issue", job.state.lastError);
     }
     if (job.description?.trim()) {
-      parts.push(`<strong>note:</strong> ${escapeHtml(job.description.trim())}`);
+      this.appendMetaLine(meta, "note", job.description.trim());
     }
-    return parts.join("<br>");
+    return meta;
   }
 
   private buildTaskBlock(job: CronJobRow): HTMLDivElement | null {
@@ -605,9 +729,7 @@ export class SchedulesPanel extends HTMLElement {
 
     runRow.append(runBtn, runStatus);
 
-    const meta = document.createElement("div");
-    meta.className = "meta";
-    meta.innerHTML = this.formatMetaHtml(job, locale);
+    const meta = this.buildMetaElement(job, locale);
 
     this.cardParts.set(job.id, { meta, runBtn, runStatus });
     card.append(titleRow, runRow, meta);
@@ -687,7 +809,9 @@ export class SchedulesPanel extends HTMLElement {
         job.state = st;
         const parts = this.cardParts.get(jobId);
         if (parts) {
-          parts.meta.innerHTML = this.formatMetaHtml(job, this.viewLocale);
+          const nextMeta = this.buildMetaElement(job, this.viewLocale);
+          parts.meta.replaceWith(nextMeta);
+          parts.meta = nextMeta;
         }
       }
 
