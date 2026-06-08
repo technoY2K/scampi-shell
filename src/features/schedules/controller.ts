@@ -3,7 +3,6 @@ import type { SchedulesPanel } from "./panel";
 import type { CronListPayload, CronRunResponse, CronStatusPayload } from "./types";
 
 const LIST_PARAMS = {
-  includeDisabled: true,
   limit: 200,
   offset: 0,
   enabled: "all" as const,

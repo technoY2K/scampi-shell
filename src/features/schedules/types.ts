@@ -16,6 +16,7 @@ export type CronJobRow = {
   payload?: unknown;
   state?: {
     nextRunAtMs?: number;
+    runningAtMs?: number;
     lastRunAtMs?: number;
     lastRunStatus?: string;
     lastStatus?: string;

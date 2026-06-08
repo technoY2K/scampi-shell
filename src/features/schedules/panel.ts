@@ -666,6 +666,9 @@ export class SchedulesPanel extends HTMLElement {
       } else {
         for (const job of jobs) {
           this.listEl.append(this.buildCard(job, locale));
+          if (typeof job.state?.runningAtMs === "number" && Number.isFinite(job.state.runningAtMs)) {
+            this.setRunRowState(job.id, "running");
+          }
         }
       }
     }
